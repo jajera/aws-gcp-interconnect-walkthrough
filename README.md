@@ -62,7 +62,7 @@ src/styles/                    # Theme overrides
 
 ## Content source
 
-The walkthrough content is based on [terraform-aws-interconnect-demo](https://github.com/jajera/terraform-aws-interconnect-demo) (branch: `1-first-release`).
+The walkthrough content is based on [terraform-aws-interconnect-demo](https://github.com/jajera/terraform-aws-interconnect-demo).
 
 ## License
 
