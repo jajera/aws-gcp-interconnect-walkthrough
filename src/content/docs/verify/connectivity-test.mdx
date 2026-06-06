@@ -1,0 +1,82 @@
+---
+title: Connectivity Test
+description: Step 7 — Ping EC2 ↔ GCE over the interconnect to confirm end-to-end private connectivity.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## Step 7 — End-to-end connectivity test
+
+Allow a few minutes after the <Tooltip term="interconnect" label="Interconnect" /> shows Available for <Tooltip term="bgp" /> and routes to converge.
+
+### Resolve ping targets
+
+`terraform output` is not available inside EC2 (<Tooltip term="ssm" />) or <Tooltip term="gce" /> (SSH) shells — note the IPs before you connect:
+
+```bash
+export GCP_PROJECT="$(terraform output -raw gcp_project_id)"
+export GCE_IP="$(terraform output -raw gce_instance_private_ip)"
+export AWS_IP="$(terraform output -raw aws_instance_private_ip)"
+echo "GCP project: ${GCP_PROJECT}"
+echo "GCE target: ${GCE_IP}"
+echo "AWS target: ${AWS_IP}"
+```
+
+## EC2 → GCE (SSM Session Manager)
+
+The instance has no public IP. From your workstation:
+
+```bash
+aws ssm start-session \
+  --target "$(terraform output -raw aws_instance_id)" \
+  --region "$(terraform output -raw aws_region)"
+```
+
+From the EC2 shell, ping using the GCE IP you printed above:
+
+```bash
+ping -c 5 10.1.0.2   # replace with your gce_instance_private_ip
+```
+
+## GCE → EC2 (IAP tunnel)
+
+From your workstation, save the <Tooltip term="terraform" />-generated key pair and connect:
+
+```bash
+terraform output -raw gce_ssh_private_key > demo-gce-key
+terraform output -raw gce_ssh_public_key > demo-gce-key.pub
+chmod 600 demo-gce-key demo-gce-key.pub
+```
+
+<Aside type="note">
+If `gce_ssh_public_key` is not found, run `terraform apply` once (no infrastructure changes — only registers the output). Or derive the matching public key: `ssh-keygen -y -f demo-gce-key > demo-gce-key.pub && chmod 600 demo-gce-key.pub`
+</Aside>
+
+```bash
+gcloud compute ssh "$(terraform output -raw gce_instance_name)" \
+  --zone="$(terraform output -raw gce_instance_zone)" \
+  --project="$(terraform output -raw gcp_project_id)" \
+  --tunnel-through-iap \
+  --ssh-key-file=demo-gce-key
+```
+
+<Aside type="caution">
+`gcloud compute ssh --ssh-key-file` requires both private and `.pub` files. Do **not** answer `y` if gcloud offers to overwrite broken keys — that would replace the Terraform key with a new one the VM does not trust.
+</Aside>
+
+<Aside type="danger">
+These files contain secrets. They are listed in `.gitignore` (`demo-gce-key`, `demo-gce-key.pub`) — do not commit them. Remove them during [Teardown](/aws-gcp-interconnect-walkthrough/teardown/).
+</Aside>
+
+From the GCE shell, ping using the AWS IP you printed above:
+
+```bash
+ping -c 5 10.0.1.10   # replace with your aws_instance_private_ip
+```
+
+## Success criteria
+
+Successful round-trip ping confirms traffic is flowing over the <Tooltip term="interconnect" label="Interconnect multicloud" /> path.
+
+**Optional:** Run `traceroute` from either side — hops should not traverse public internet addresses.

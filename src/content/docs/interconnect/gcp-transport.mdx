@@ -1,0 +1,69 @@
+---
+title: GCP Transport (gcloud)
+description: Step 4 — Create the Partner Cross-Cloud Interconnect transport using the activation key from AWS.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## Step 4 — Create the GCP transport
+
+Run from Cloud Shell or a machine with `gcloud` authenticated to your <Tooltip term="gcp" /> project.
+
+### Set environment variables
+
+```bash
+export GCP_PROJECT="$(terraform output -raw gcp_project_id)"
+export GCP_REGION="$(terraform output -raw gcp_region)"
+export GCP_NETWORK="$(terraform output -raw gcp_vpc_network_name)"
+export TRANSPORT_NAME="$(terraform output -raw gcp_transport_name)"
+export ADVERTISED_ROUTES="$(terraform output -raw gcp_advertised_routes_for_transport)"
+export ACTIVATION_KEY="paste-activation-key-from-step-3"
+
+gcloud config set project "$GCP_PROJECT"
+```
+
+### Create transport
+
+```bash
+gcloud beta network-connectivity transports create "$TRANSPORT_NAME" \
+  --region="$GCP_REGION" \
+  --network="$GCP_NETWORK" \
+  --advertised-routes="$ADVERTISED_ROUTES" \
+  --activation-key="$ACTIVATION_KEY"
+```
+
+<Aside type="caution">
+When using `--activation-key`, bandwidth is embedded in the key — do **not** pass `--bandwidth` separately.
+</Aside>
+
+<Aside type="note">
+The command blocks while the long-running operation completes (`Waiting for operation ...`). That is normal — do not interrupt unless you intend to cancel the create.
+</Aside>
+
+### Check status
+
+```bash
+gcloud beta network-connectivity transports describe "$TRANSPORT_NAME" \
+  --region="$GCP_REGION"
+```
+
+### Transport states
+
+<table>
+  <thead>
+    <tr>
+      <th>State</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>CREATING</code></td><td>Long-running create in progress — wait</td></tr>
+    <tr><td><code>PENDING_CONFIG</code></td><td>Create finished — proceed to Step 5 immediately</td></tr>
+    <tr><td><code>ACTIVE</code></td><td>May appear after AWS interconnect is Available (not required before Step 5)</td></tr>
+  </tbody>
+</table>
+
+`state: PENDING_CONFIG` with a populated `peeringNetwork` field means Step 4 succeeded. Proceed to [VPC Peering](/aws-gcp-interconnect-walkthrough/interconnect/vpc-peering/).
+
+Full cross-cloud readiness is confirmed when <Tooltip term="interconnect" label="AWS interconnect" /> is `Available` and incoming peering routes appear (Step 6).

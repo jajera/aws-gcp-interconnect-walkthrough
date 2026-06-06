@@ -1,0 +1,19 @@
+---
+title: Setup
+description: Overview of the setup phase — configure variables and apply Terraform.
+---
+
+The setup phase gets your base infrastructure running on both clouds. After this, you'll have a working VPC on AWS and GCP with compute instances ready, plus the Direct Connect Gateway waiting for the interconnect link.
+
+## What gets created
+
+Roughly 20 resources across AWS and GCP:
+
+- **AWS**: VPC, private subnet, Virtual Private Gateway, route table, EC2 instance (t3.micro), 3 VPC interface endpoints for SSM, DX Gateway + association
+- **GCP**: VPC network, subnet, firewall rules (ICMP, SSH, IAP), GCE instance (e2-micro)
+
+## Steps in this section
+
+1. [Configure variables](/aws-gcp-interconnect-walkthrough/setup/configure-variables/) — edit `terraform.tfvars` with your project details
+2. [Apply Terraform](/aws-gcp-interconnect-walkthrough/setup/apply-terraform/) — create the base infrastructure
+3. [GCP prep](/aws-gcp-interconnect-walkthrough/setup/gcp-prep/) — enable the Network Connectivity API and service agent

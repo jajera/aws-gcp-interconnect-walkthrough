@@ -1,0 +1,55 @@
+---
+title: Checking for Errors
+description: Decision tree and diagnostic commands when the interconnect enters a failed or stuck state.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## When to worry
+
+`Pending` is not an error — it means AWS is still provisioning after GCP Steps 4–5 complete. Worry when state becomes `failed`, or pending exceeds ~30 minutes with no progress.
+
+## Decision tree
+
+![Interconnect troubleshooting decision tree: four branches for pending (normal), failed, missing routes, and ping failures](/aws-gcp-interconnect-walkthrough/troubleshooting-decision-tree.png)
+
+## AWS — CloudTrail (interconnect events)
+
+**Console:** [CloudTrail Event history](https://console.aws.amazon.com/cloudtrail/home#/events) → filter Event source = `interconnect.amazonaws.com`.
+
+**CLI:**
+
+```bash
+aws cloudtrail lookup-events \
+  --lookup-attributes AttributeKey=EventSource,AttributeValue=interconnect.amazonaws.com \
+  --start-time "$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ)" \
+  --max-results 10 \
+  --query 'Events[*].{Time:EventTime,Name:EventName}' \
+  --output table
+```
+
+<Aside type="note">
+A `"state": "pending"` API response does not guarantee backend provisioning succeeds. Failures during provisioning may not surface as explicit errors ([re:Post guide](https://repost.aws/articles/ARU_FMBmrUQYG2hIPezn-XRQ/aws-multicloud-interconnect-failures-aws-to-gcp)).
+</Aside>
+
+## AWS — Organization SCPs
+
+If you use AWS Organizations / Control Tower, ensure SCPs allow `interconnect:*` — a separate namespace from `directconnect:*`. SCP denials often produce a silent `failed` state with no CloudTrail denial log.
+
+Confirm interconnect and DXGW are in the same account as Terraform:
+
+```bash
+aws sts get-caller-identity
+terraform output -raw aws_dx_gateway_id
+```
+
+## GCP — transport or peering failures
+
+Transport stuck in `CREATING` (not `PENDING_CONFIG`) for hours — check VPC Service Controls: allow `networkconnectivity-transportmanager-clh@system.gserviceaccount.com` through the perimeter.
+
+Recent transport operations:
+
+```bash
+gcloud beta network-connectivity operations list \
+  --region="$GCP_REGION" --project="$GCP_PROJECT" --limit=5
+```

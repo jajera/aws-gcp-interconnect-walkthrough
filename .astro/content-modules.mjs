@@ -1,0 +1,23 @@
+
+export default new Map([
+["src/content/docs/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/interconnect/aws-interconnect.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Finterconnect%2Faws-interconnect.mdx&astroContentModuleFlag=true")],
+["src/content/docs/interconnect/gcp-transport.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Finterconnect%2Fgcp-transport.mdx&astroContentModuleFlag=true")],
+["src/content/docs/interconnect/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Finterconnect%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/interconnect/vpc-peering.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Finterconnect%2Fvpc-peering.mdx&astroContentModuleFlag=true")],
+["src/content/docs/overview.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Foverview.mdx&astroContentModuleFlag=true")],
+["src/content/docs/prerequisites/cost-estimate.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fprerequisites%2Fcost-estimate.mdx&astroContentModuleFlag=true")],
+["src/content/docs/prerequisites/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fprerequisites%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/reference.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Freference.mdx&astroContentModuleFlag=true")],
+["src/content/docs/setup/apply-terraform.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fsetup%2Fapply-terraform.mdx&astroContentModuleFlag=true")],
+["src/content/docs/setup/configure-variables.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fsetup%2Fconfigure-variables.mdx&astroContentModuleFlag=true")],
+["src/content/docs/setup/gcp-prep.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fsetup%2Fgcp-prep.mdx&astroContentModuleFlag=true")],
+["src/content/docs/setup/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fsetup%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/teardown.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fteardown.mdx&astroContentModuleFlag=true")],
+["src/content/docs/troubleshooting/billing-verification.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Ftroubleshooting%2Fbilling-verification.mdx&astroContentModuleFlag=true")],
+["src/content/docs/troubleshooting/checking-errors.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Ftroubleshooting%2Fchecking-errors.mdx&astroContentModuleFlag=true")],
+["src/content/docs/troubleshooting/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Ftroubleshooting%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/verify/connectivity-test.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fverify%2Fconnectivity-test.mdx&astroContentModuleFlag=true")],
+["src/content/docs/verify/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fverify%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/verify/routing.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fverify%2Frouting.mdx&astroContentModuleFlag=true")]]);
+		

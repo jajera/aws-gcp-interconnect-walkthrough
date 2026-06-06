@@ -1,0 +1,70 @@
+---
+title: Apply Terraform
+description: Step 2 — Run terraform apply to create base infrastructure on AWS and GCP.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## Step 2 — Apply Terraform (base infrastructure)
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+
+Expect roughly 20 resources (<Tooltip term="aws" /> VPC/network/compute/endpoints + <Tooltip term="gcp" /> network/compute + <Tooltip term="dx-gateway" label="DX Gateway" />).
+
+Save the outputs — you will reference them in later steps:
+
+```bash
+terraform output
+```
+
+## Key outputs
+
+<table>
+  <thead>
+    <tr>
+      <th>Output</th>
+      <th>Used in</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>aws_dx_gateway_id</code></td><td>AWS console Step 3 — select Direct Connect Gateway</td></tr>
+    <tr><td><code>aws_allowed_prefix_for_gcp</code></td><td>Informational — AWS CIDR advertised to GCP</td></tr>
+    <tr><td><code>gcp_advertised_routes_for_transport</code></td><td>gcloud Step 4 — <code>--advertised-routes</code></td></tr>
+    <tr><td><code>gcp_vpc_network_name</code></td><td>gcloud Steps 4–5 — <code>--network</code></td></tr>
+    <tr><td><code>gcp_transport_name</code></td><td>gcloud Steps 4–5 — transport name</td></tr>
+    <tr><td><code>aws_instance_private_ip</code> / <code>gce_instance_private_ip</code></td><td>Step 7 — ping targets</td></tr>
+  </tbody>
+</table>
+
+<Aside type="note">
+`aws_dx_gateway_association` may show **pending** until Steps 4–5 complete. It can reach `associated` while the interconnect is still pending — that is normal and a good sign.
+</Aside>
+
+## Output reference
+
+<table>
+  <thead>
+    <tr>
+      <th>Output</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>aws_dx_gateway_id</code></td><td>DX Gateway for Interconnect creation</td></tr>
+    <tr><td><code>aws_allowed_prefix_for_gcp</code></td><td>AWS CIDR sent toward GCP</td></tr>
+    <tr><td><code>gcp_advertised_routes_for_transport</code></td><td>GCP CIDR for <code>--advertised-routes</code></td></tr>
+    <tr><td><code>gcp_vpc_network_name</code></td><td>GCP network name for gcloud</td></tr>
+    <tr><td><code>gcp_transport_name</code></td><td>Transport resource name</td></tr>
+    <tr><td><code>aws_instance_id</code></td><td>EC2 ID for SSM</td></tr>
+    <tr><td><code>aws_instance_private_ip</code></td><td>EC2 private IP (ping target from GCP)</td></tr>
+    <tr><td><code>gce_instance_name</code> / <code>gce_instance_zone</code></td><td>GCE SSH via IAP</td></tr>
+    <tr><td><code>gce_instance_private_ip</code></td><td>GCE private IP (ping target from AWS)</td></tr>
+    <tr><td><code>gce_ssh_private_key</code></td><td>Generated SSH private key for GCE (sensitive)</td></tr>
+    <tr><td><code>gce_ssh_public_key</code></td><td>Matching public key on the VM</td></tr>
+  </tbody>
+</table>

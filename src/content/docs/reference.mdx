@@ -1,0 +1,67 @@
+---
+title: Reference
+description: Repository layout, variable reference, output reference, and external links.
+---
+
+import Tooltip from '@/components/Tooltip.astro';
+
+## Repository layout
+
+```
+tf-aws-interconnect-demo/
+├── versions.tf           # Provider constraints
+├── main.tf               # AWS + GCP providers
+├── variables.tf          # Input variables
+├── outputs.tf            # Values needed for Steps 3–7
+├── terraform.tfvars      # Edit before apply
+├── aws-interconnect.tf   # Direct Connect Gateway only
+├── aws-network.tf        # VPC, VGW, DX association, EC2, SSM endpoints
+├── gcp-network.tf        # VPC, subnet, firewall, GCE
+├── README.md             # Original walkthrough
+├── .gitignore            # Ignores state, local tfvars, demo-gce-key*
+└── .terraform.lock.hcl
+```
+
+Step 7 writes `demo-gce-key` and `demo-gce-key.pub` locally — both are gitignored and must be removed at teardown.
+
+## What is intentionally not in Terraform
+
+<table>
+  <thead>
+    <tr>
+      <th>Resource</th>
+      <th>Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>aws_interconnect_connection</code></td><td>Not yet in hashicorp/aws provider (<a href="https://github.com/hashicorp/terraform-provider-aws/issues/47458">issue #47458</a>); use console/CLI</td></tr>
+    <tr><td><code>google_network_connectivity_transport</code></td><td>Beta API; activation-key flow is console-driven today</td></tr>
+    <tr><td>VPC peering to transport network</td><td>Depends on runtime <code>peeringNetwork</code> from transport describe</td></tr>
+  </tbody>
+</table>
+
+## External references
+
+### AWS Interconnect
+
+- [AWS Interconnect – product page](https://aws.amazon.com/interconnect/)
+- [AWS Interconnect GA blog post (April 14, 2026)](https://aws.amazon.com/blogs/aws/aws-interconnect-is-now-generally-available-with-a-new-option-to-simplify-last-mile-connectivity/) — announcement with GCP demo walkthrough
+- [AWS Interconnect – multicloud regional availability](https://docs.aws.amazon.com/interconnect/latest/userguide/region-availability.html)
+- [AWS Interconnect – multicloud pricing](https://aws.amazon.com/interconnect/multicloud/pricing/)
+- [AWS Interconnect – multicloud Free Tier announcement](https://aws.amazon.com/about-aws/whats-new/2026/05/aws-interconnect-multicloud-offers-free-500-mbps-tier/)
+- [AWS Interconnect User Guide](https://docs.aws.amazon.com/interconnect/latest/userguide/what-is.html)
+
+### GCP Partner Cross-Cloud Interconnect
+
+- [GCP Partner Cross-Cloud Interconnect for AWS (overview)](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/partner-cross-cloud-interconnect-aws)
+- [GCP — VPC peering for AWS-initiated interconnect](https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner-cci-for-aws/create-vpc-peering-aws-to-gcp)
+- [GCP Interconnect pricing](https://cloud.google.com/network-connectivity/docs/interconnect/pricing/)
+
+### Troubleshooting and community
+
+- [AWS re:Post — multicloud interconnect silent failures (SCP / VPC-SC)](https://repost.aws/articles/ARU_FMBmrUQYG2hIPezn-XRQ/aws-multicloud-interconnect-failures-aws-to-gcp)
+- [Terraform AWS provider — Interconnect tracking issue #47458](https://github.com/hashicorp/terraform-provider-aws/issues/47458)
+
+### Architecture patterns
+
+- [Build resilient multicloud connectivity architectures with AWS Interconnect – multicloud](https://aws.amazon.com/blogs/networking-and-content-delivery/build-resilient-and-scalable-multicloud-connectivity-architectures-with-aws-interconnect-multicloud/) — reference architectures for Transit Gateway and Cloud WAN

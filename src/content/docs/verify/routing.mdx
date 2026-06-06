@@ -1,0 +1,150 @@
+---
+title: Verify Routing
+description: Step 6 — Confirm routing on both sides and poll until AWS interconnect reaches Available.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## Step 6 — Verify routing and wait for AWS
+
+After Step 5, you are waiting on <Tooltip term="aws" /> (`pending` → `available`). <Tooltip term="gcp" /> peering `ACTIVE` with <Tooltip term="transport" label="transport" /> `PENDING_CONFIG` and 0 incoming routes is a healthy in-progress state — not an error.
+
+### Expected states (healthy in-progress)
+
+<table>
+  <thead>
+    <tr>
+      <th>Check</th>
+      <th>Good</th>
+      <th>Bad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>AWS interconnect state</td><td><code>pending</code></td><td><code>failed</code></td></tr>
+    <tr><td>DXGW association</td><td><code>associated</code> (can happen before Available)</td><td>stuck pending / disassociated</td></tr>
+    <tr><td>GCP peering</td><td>ACTIVE / Connected</td><td>INACTIVE or error in STATE_DETAILS</td></tr>
+    <tr><td>GCP transport</td><td>PENDING_CONFIG, adminEnabled: true</td><td>stuck CREATING for hours</td></tr>
+    <tr><td>GCP incoming routes</td><td>0 items</td><td>still 0 after AWS available (10+ min)</td></tr>
+  </tbody>
+</table>
+
+## Combined health check
+
+Run this after Step 5. Re-run every 5–10 minutes until AWS shows `available`:
+
+```bash
+export AWS_REGION="$(terraform output -raw aws_region)"
+export GCP_PROJECT="$(terraform output -raw gcp_project_id)"
+export GCP_REGION="$(terraform output -raw gcp_region)"
+export GCP_NETWORK="$(terraform output -raw gcp_vpc_network_name)"
+export TRANSPORT_NAME="$(terraform output -raw gcp_transport_name)"
+
+# 1. AWS interconnect state
+aws interconnect list-connections --region "$AWS_REGION" --output json
+
+# 2. DX Gateway association
+aws directconnect describe-direct-connect-gateway-associations \
+  --direct-connect-gateway-id "$(terraform output -raw aws_dx_gateway_id)" \
+  --output json
+
+# 3. GCP transport
+gcloud beta network-connectivity transports describe "$TRANSPORT_NAME" \
+  --region="$GCP_REGION" --project="$GCP_PROJECT" \
+  --format='yaml(state,adminEnabled,updateTime)'
+
+# 4. GCP peering
+gcloud compute networks peerings list --network="$GCP_NETWORK" --project="$GCP_PROJECT"
+
+# 5. GCP incoming routes (empty until AWS is available — not an error yet)
+gcloud compute networks peerings list-routes demo-aws-peering \
+  --direction=INCOMING --network="$GCP_NETWORK" \
+  --region="$GCP_REGION" --project="$GCP_PROJECT"
+```
+
+## Poll AWS until available
+
+Replace `mcc-xxxxxxxx` with your connection `id` from the list-connections output:
+
+```bash
+aws interconnect get-connection \
+  --identifier mcc-xxxxxxxx \
+  --region "$AWS_REGION" \
+  --query 'connection.{state:state,id:id,attachPoint:attachPoint}' \
+  --output table
+```
+
+**Timeline:** 0–15 min pending is normal · 15–30 min still pending — keep polling · > 30 min or `failed` — see [Troubleshooting](/aws-gcp-interconnect-walkthrough/troubleshooting/).
+
+## AWS — Interconnect status
+
+Check the multicloud connection — this is the main gate for route exchange.
+
+**Console (recommended):** [AWS Interconnect](https://us-east-1.console.aws.amazon.com/directconnect/v2/home?region=ap-southeast-1#/aws-interconnect) — set `region=` to your `aws_region`. Status should move Pending → Available.
+
+**CLI (optional):** Requires AWS CLI 2.34.43+:
+
+```bash
+aws --version   # must show 2.34.43 or newer
+
+aws interconnect list-connections \
+  --region "$(terraform output -raw aws_region)" \
+  --query 'connections[*].{id:id,state:state,description:description}' \
+  --output table
+```
+
+<Aside type="caution">
+`aws directconnect describe-interconnects` is the legacy physical Direct Connect API — **not** AWS Interconnect multicloud. Do not use it for this demo.
+</Aside>
+
+## AWS — DX Gateway association
+
+```bash
+aws directconnect describe-direct-connect-gateway-associations \
+  --direct-connect-gateway-id "$(terraform output -raw aws_dx_gateway_id)" \
+  --query 'directConnectGatewayAssociations[*].{state:associationState,allowed:allowedPrefixesToDirectConnectGateway}' \
+  --output table
+```
+
+The association can reach `associated` while the <Tooltip term="interconnect" label="interconnect" /> is still pending — that is normal. Allowed prefixes should include your `aws_vpc_cidr` (e.g. `10.0.0.0/16`).
+
+## AWS — VGW route propagation
+
+In the AWS console: **VPC → Route tables → demo-private-rt**
+
+You should see:
+
+- `10.1.0.0/16` (your `gcp_vpc_cidr`) → Virtual Private Gateway (static route from Terraform)
+- GCP-learned routes may appear once <Tooltip term="bgp" /> over the Interconnect is up
+
+## GCP — peering routes (incoming from AWS)
+
+After AWS shows Available, AWS routes should appear on the peering:
+
+```bash
+gcloud compute networks peerings list-routes demo-aws-peering \
+  --direction=INCOMING \
+  --network="$GCP_NETWORK" \
+  --region="$GCP_REGION" \
+  --project="$GCP_PROJECT"
+```
+
+**Target:** `10.0.0.0/16` (your `aws_vpc_cidr`) with status `accepted`. Listed 0 items before AWS is Available is expected.
+
+Outgoing (GCP → AWS) may show `10.1.0.0/16` earlier:
+
+```bash
+gcloud compute networks peerings list-routes demo-aws-peering \
+  --direction=OUTGOING \
+  --network="$GCP_NETWORK" \
+  --region="$GCP_REGION" \
+  --project="$GCP_PROJECT"
+```
+
+## GCP — custom routes
+
+```bash
+gcloud compute routes list --filter="network:$GCP_NETWORK" --project="$GCP_PROJECT"
+```
+
+You should see routes toward your AWS <Tooltip term="vpc" /> <Tooltip term="cidr" /> learned via the peering/transport path once <Tooltip term="bgp" /> is up.

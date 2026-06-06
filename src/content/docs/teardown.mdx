@@ -1,0 +1,150 @@
+---
+title: Teardown
+description: Delete interconnect resources in the correct order, then terraform destroy.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+<Aside type="danger">
+`terraform destroy` does **not** delete the AWS interconnect, GCP transport, or VPC peering. Skipping manual teardown leaves ~$6+/hr combined (paid AWS + GCP transport) billing until you remove them.
+</Aside>
+
+## Teardown order
+
+Delete interconnect resources in this order, then destroy <Tooltip term="terraform" />:
+
+<table>
+  <thead>
+    <tr>
+      <th>Order</th>
+      <th>What</th>
+      <th>Stops billing?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>GCP VPC peering</td><td>—</td></tr>
+    <tr><td>2</td><td>GCP transport</td><td>~$5/hr GCP</td></tr>
+    <tr><td>3</td><td>AWS multicloud Interconnect</td><td>~$1.37/hr AWS (after delete completes)</td></tr>
+    <tr><td>4</td><td>Wait — AWS list-connections empty</td><td>—</td></tr>
+    <tr><td>5</td><td><code>terraform destroy</code></td><td>~$30–40/mo base infra</td></tr>
+    <tr><td>6</td><td>Remove <code>demo-gce-key*</code></td><td>— (gitignored secrets)</td></tr>
+  </tbody>
+</table>
+
+## Set environment variables
+
+Run from your workstation in the repo directory:
+
+```bash
+export GCP_PROJECT="$(terraform output -raw gcp_project_id)"
+export GCP_REGION="$(terraform output -raw gcp_region)"
+export GCP_NETWORK="$(terraform output -raw gcp_vpc_network_name)"
+export TRANSPORT_NAME="$(terraform output -raw gcp_transport_name)"
+export AWS_REGION="$(terraform output -raw aws_region)"
+```
+
+**Optional** — confirm nothing is still in use before deleting:
+
+```bash
+aws interconnect list-connections --region "$AWS_REGION" \
+  --query 'connections[*].{id:id,state:state,description:description}' \
+  --output table
+
+gcloud beta network-connectivity transports describe "$TRANSPORT_NAME" \
+  --region="$GCP_REGION" --project="$GCP_PROJECT" \
+  --format='value(state)'
+```
+
+## 1. GCP — delete VPC peering
+
+Delete peering before the transport ([GCP teardown order](https://cloud.google.com/network-connectivity/docs/interconnect/how-to/cci/deleting-interconnects)).
+
+```bash
+gcloud compute networks peerings delete demo-aws-peering \
+  --network="$GCP_NETWORK" \
+  --project="$GCP_PROJECT" \
+  --quiet
+```
+
+## 2. GCP — delete transport
+
+```bash
+gcloud beta network-connectivity transports delete "$TRANSPORT_NAME" \
+  --region="$GCP_REGION" \
+  --project="$GCP_PROJECT" \
+  --quiet
+```
+
+## 3. AWS — delete multicloud Interconnect
+
+**Console:** [AWS Interconnect](https://us-east-1.console.aws.amazon.com/directconnect/v2/home?region=ap-southeast-1#/aws-interconnect) — set `region=` to your `aws_region`. Delete `demo-interconnect`.
+
+**CLI (AWS CLI ≥ 2.34.43):**
+
+```bash
+CONN_ID="$(aws interconnect list-connections --region "$AWS_REGION" \
+  --query 'connections[?description==`demo-interconnect`].id | [0]' --output text)"
+
+aws interconnect delete-connection \
+  --identifier "$CONN_ID" \
+  --region "$AWS_REGION"
+```
+
+The API returns `"state": "deleting"` immediately — that is not finished yet.
+
+## 4. Wait for AWS delete to finish
+
+Do **not** run `terraform destroy` while AWS still shows `deleting`.
+
+Poll until the interconnect list is empty:
+
+```bash
+aws interconnect list-connections --region "$AWS_REGION" \
+  --query 'connections[*].{id:id,state:state,description:description}' \
+  --output table
+```
+
+<table>
+  <thead>
+    <tr>
+      <th>Result</th>
+      <th>Safe to proceed?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Empty table</td><td>Yes</td></tr>
+    <tr><td>state: <code>deleting</code></td><td>No — wait</td></tr>
+    <tr><td>state: <code>available</code></td><td>No — delete not started or failed</td></tr>
+  </tbody>
+</table>
+
+Confirm <Tooltip term="gcp" /> is clean (expect `Listed 0 items` for both after Steps 1–2):
+
+```bash
+gcloud beta network-connectivity transports list \
+  --region="$GCP_REGION" --project="$GCP_PROJECT"
+
+gcloud compute networks peerings list \
+  --network="$GCP_NETWORK" --project="$GCP_PROJECT"
+```
+
+## 5. Terraform — destroy base infrastructure
+
+Only after AWS `list-connections` is empty:
+
+```bash
+terraform destroy
+```
+
+## 6. Local cleanup — remove SSH keys
+
+Remove the GCE key files saved in Step 7:
+
+```bash
+rm -f demo-gce-key demo-gce-key.pub
+```
+
+<Aside type="caution">
+If you skip this step, the private key stays in the repo directory. `.gitignore` prevents accidental `git add`, but delete the files anyway — especially on shared machines.
+</Aside>

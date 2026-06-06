@@ -1,0 +1,22 @@
+---
+title: Verify
+description: Confirm routing, wait for AWS availability, and test end-to-end connectivity.
+---
+
+After completing the interconnect steps, you need to verify everything came up correctly and test the actual cross-cloud connectivity.
+
+## Verification steps
+
+1. **[Verify Routing](/aws-gcp-interconnect-walkthrough/verify/routing/)** — Poll both sides, confirm states, wait for AWS to go Available
+2. **[Connectivity Test](/aws-gcp-interconnect-walkthrough/verify/connectivity-test/)** — Ping EC2 ↔ GCE over the interconnect path
+
+## What to expect
+
+After Step 5 (VPC peering), you're waiting on AWS to transition from `pending` → `available`. This typically takes 5–30 minutes. During this time:
+
+- GCP peering shows `ACTIVE / Connected` ✓
+- GCP transport shows `PENDING_CONFIG` with `adminEnabled: true` ✓
+- AWS interconnect shows `pending` (normal, keep polling)
+- GCP incoming routes show `0 items` (normal until AWS is Available)
+
+Once AWS shows `available`, routes exchange via BGP and you can test end-to-end connectivity.

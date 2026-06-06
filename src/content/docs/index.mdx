@@ -1,0 +1,34 @@
+---
+title: AWS-GCP Interconnect Walkthrough
+description: A hands-on guide for private IP connectivity between AWS and Google Cloud using AWS Interconnect multicloud and GCP Partner Cross-Cloud Interconnect.
+template: splash
+hero:
+  tagline: Private connectivity between AWS and GCP — no VPN, no colocation, no public internet.
+  actions:
+    - text: Get Started
+      link: /aws-gcp-interconnect-walkthrough/overview/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/jajera/terraform-aws-interconnect-demo
+      icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What you'll build
+
+<CardGrid>
+  <Card title="Private cross-cloud path" icon="rocket">
+    EC2 in AWS and GCE in GCP talking over a managed interconnect — entirely private, no public internet hops.
+  </Card>
+  <Card title="Terraform + CLI hybrid" icon="setting">
+    Terraform provisions the network and compute foundations. The interconnect link itself is created through console and gcloud (provider support pending).
+  </Card>
+  <Card title="Copy-paste first" icon="document">
+    Every command is ready to run. Variables come from `terraform output` so you never guess resource IDs.
+  </Card>
+  <Card title="Real cost awareness" icon="warning">
+    Clear per-step cost breakdowns so you know exactly what you're paying — and how to tear down fast.
+  </Card>
+</CardGrid>

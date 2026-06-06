@@ -1,0 +1,204 @@
+---
+title: Overview
+description: What AWS Interconnect is, why it matters for GCP connectivity, and what this demo proves.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## The story
+
+On April 14, 2026, AWS [announced the general availability](https://aws.amazon.com/blogs/aws/aws-interconnect-is-now-generally-available-with-a-new-option-to-simplify-last-mile-connectivity/) of **<Tooltip term="interconnect" label="AWS Interconnect – multicloud" />**, a managed private connectivity service that connects Amazon VPCs directly to VPCs on other cloud providers. At GA, <Tooltip term="gcp" label="Google Cloud" /> is the only officially supported partner — Microsoft Azure and Oracle Cloud Infrastructure (OCI) are coming later in 2026.
+
+[AWS Interconnect](https://aws.amazon.com/interconnect/) removes the traditional complexity of cross-cloud networking: no VPN tunnels to manage, no colocation facilities to coordinate, no third-party network fabrics to configure. You select a provider, pick your regions, choose bandwidth, and AWS generates an activation key. Use that key on the GCP side, and private connectivity is established in minutes.
+
+Traffic flows entirely over the AWS global backbone and <Tooltip term="gcp" label="Google Cloud" />'s private network — it never traverses the public internet. Every connection uses <Tooltip term="macsec" label="MACsec" /> encryption on the physical links between AWS and GCP routers. Resiliency is built in: each connection spans multiple logical links distributed across at least two physical facilities.
+
+## Why GCP (and only GCP right now)
+
+As of this writing, **Google Cloud is the only GA partner** for AWS Interconnect – multicloud. The service page and blog are clear: Azure and OCI are "coming later in 2026." This walkthrough focuses exclusively on the AWS ↔ GCP path because it's the only one you can actually provision today.
+
+On the GCP side, the corresponding service is <Tooltip term="partner-cci" label="Partner Cross-Cloud Interconnect" />. The flow is:
+
+1. AWS generates an activation key (console)
+2. GCP uses that key to create a <Tooltip term="transport" label="transport" /> (`gcloud beta`)
+3. You peer your workload <Tooltip term="vpc" /> to the transport's managed network
+
+No physical cross-connect, no LOA, no colocation visit.
+
+## What this demo proves
+
+After completing every step, an EC2 instance in a private AWS subnet and a <Tooltip term="gce" /> VM in a private GCP subnetwork can reach each other over ICMP and SSH entirely through the managed Interconnect path — no public internet, no colocation cross-connect, no VPN.
+
+We chose EC2-to-VM connectivity because it's straightforward to verify and a common real-world pattern. But the interconnect itself is not limited to this — any workload in either VPC (containers on ECS/EKS, Lambda functions, managed databases, internal load balancers) can use the same private path once the route exchange is in place.
+
+## Architecture
+
+![Architecture diagram: EC2 and GCE VM in private subnets, connected via VGW, DX Gateway, AWS Interconnect multicloud, GCP transport, and VPC peering](/aws-gcp-interconnect-walkthrough/architecture-diagram.png)
+
+**Traffic path (AWS → GCP):**
+EC2 → <Tooltip term="vgw" /> → <Tooltip term="dx-gateway" label="DX Gateway" /> → Interconnect → GCP <Tooltip term="transport" label="Transport" /> → <Tooltip term="vpc-peering" label="VPC peering" /> → GCE VM
+
+## What Terraform manages
+
+<table>
+  <thead>
+    <tr>
+      <th>Resource</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>aws_dx_gateway</code></td>
+      <td>Attach point for the multicloud Interconnect (console Step 3)</td>
+    </tr>
+    <tr>
+      <td><code>aws_vpc</code>, subnet, VGW, route table</td>
+      <td>AWS workload network</td>
+    </tr>
+    <tr>
+      <td><code>aws_dx_gateway_association</code></td>
+      <td>Links VGW to DX Gateway; advertises <code>aws_vpc_cidr</code> toward GCP</td>
+    </tr>
+    <tr>
+      <td><code>aws_instance</code> + SSM</td>
+      <td>Demo EC2 in a private subnet (reachable via Session Manager)</td>
+    </tr>
+    <tr>
+      <td>VPC interface endpoints</td>
+      <td>SSM connectivity without a bastion or NAT</td>
+    </tr>
+    <tr>
+      <td><code>google_compute_network</code>, subnet, firewall</td>
+      <td>GCP workload network</td>
+    </tr>
+    <tr>
+      <td><code>google_compute_instance</code></td>
+      <td>Demo GCE VM (reachable via IAP tunnel SSH)</td>
+    </tr>
+  </tbody>
+</table>
+
+## What's created manually
+
+These steps are documented in this walkthrough but not yet automatable via <Tooltip term="terraform" />:
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Tool</th>
+      <th>Resource</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3</td>
+      <td>AWS console</td>
+      <td>AWS Interconnect – multicloud (1 Gbps) → activation key</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>gcloud beta</td>
+      <td>Partner Cross-Cloud Interconnect transport</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>gcloud</td>
+      <td>VPC network peering (workload VPC ↔ transport peering network)</td>
+    </tr>
+  </tbody>
+</table>
+
+<Aside type="note">
+When provider support lands ([terraform-provider-aws#47458](https://github.com/hashicorp/terraform-provider-aws/issues/47458)), these steps can move into Terraform. Until then, this walkthrough is the source of truth for the interconnect layer.
+</Aside>
+
+## Walkthrough checklist
+
+Track your progress. Steps 3–5 are not in Terraform — they must be removed manually before `terraform destroy` or hourly interconnect charges continue.
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>What</th>
+      <th>How</th>
+      <th>In Terraform?</th>
+      <th>Billable?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Configure terraform.tfvars</td>
+      <td>edit file</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Base infra (VPC, EC2, GCE, DXGW, …)</td>
+      <td><code>terraform apply</code></td>
+      <td>Yes</td>
+      <td>Yes (~$30–40/mo)</td>
+    </tr>
+    <tr>
+      <td>2b</td>
+      <td>GCP API + service agent (one-time prep)</td>
+      <td>gcloud</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>2c</td>
+      <td>Pre-flight: reach each VM locally</td>
+      <td>SSM (AWS), IAP SSH (GCP)</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>AWS Interconnect multicloud (paid 1 Gbps)</td>
+      <td>AWS console</td>
+      <td>No</td>
+      <td>Yes (~$1.37/hr AWS)</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>GCP Partner Cross-Cloud transport</td>
+      <td>gcloud beta</td>
+      <td>No</td>
+      <td>Yes (~$5/hr GCP)</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>VPC peering (workload ↔ transport network)</td>
+      <td>gcloud</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Verify routing + poll until AWS Available</td>
+      <td>aws interconnect / gcloud</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Ping EC2 ↔ GCE over interconnect</td>
+      <td>SSM + IAP</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Teardown</td>
+      <td>Delete peering → transport → AWS → destroy</td>
+      <td>gcloud + CLI/console</td>
+      <td>Steps 3–5</td>
+      <td>Stop billing</td>
+    </tr>
+  </tbody>
+</table>
