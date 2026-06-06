@@ -42,11 +42,19 @@ src/styles/              # Theme overrides
 
 Follow `.kiro/steering/` for detailed guidance:
 
-- `docs-pattern.md` — page structure, frontmatter, MDX indentation rules
-- `astro-components.md` — which component to use when
-- `glossary.md` — alphabetical order for `src/data/glossary.ts`
-- `markdown-tables.md` — spaced separator rows required
-- `project-conventions.md` — commit messages, draft workflow, site config
+- `docs-pattern.md` — page structure, frontmatter, MDX rules, Tooltip usage
+- `astro-components.md` — which component to use when, CardGrid pitfalls, Aside placement
+- `glossary.md` — alphabetical order, definition style, usage in pages
+- `markdown-tables.md` — **CRITICAL: use HTML tables in MDX, never markdown tables**
+- `project-conventions.md` — commit messages, draft workflow, site config, OG tags, new page checklist
+
+## Critical MDX rules (read first)
+
+1. **Tables**: Never use markdown table syntax in `.mdx` files. Use HTML `<table>` elements. MDX breaks pipe-based tables when custom components are imported.
+2. **CardGrid**: Do not use `<CardGrid stagger>` — it creates skewed/offset cards. Use `<CardGrid>` without props.
+3. **Inline code in HTML**: Use `<code>text</code>`, not backticks, inside HTML table cells or elements.
+4. **Blank lines**: Always leave a blank line after closing tags (`</Aside>`, `</table>`) before the next content block.
+5. **Tooltip**: Import from `@/components/Tooltip.astro`. Use on first occurrence of a term per section.
 
 ## Sibling repos
 

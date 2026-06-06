@@ -32,3 +32,29 @@ The content for this documentation site comes from the Terraform project at:
 - `site: 'https://jajera.github.io'`
 - `base: '/aws-gcp-interconnect-walkthrough'`
 - All internal links must include the base path
+
+## Open Graph / Link Previews
+
+- OG image lives at `public/og-image.png`
+- Meta tags are set in `astro.config.mjs` under `head[]`
+- Both `og:image` and `twitter:image` must point to the full URL including base path
+- Update `og:image:alt` to describe the actual image content
+
+## Sidebar Management
+
+- Sidebar is defined in `astro.config.mjs` under `sidebar[]`
+- Only published pages (no `draft: true`) should be in the sidebar
+- Use `slug` for auto-title from frontmatter
+- Use `collapsed: true` for optional sections (e.g. Troubleshooting)
+- Use `collapsed: false` for core walkthrough flow sections
+
+## New Page Checklist
+
+When adding a new content page:
+1. Create the `.mdx` file in the appropriate `src/content/docs/` subdirectory
+2. Add frontmatter with `title` and `description`
+3. Import Tooltip and any needed Starlight components
+4. Use HTML `<table>` for any tables (never markdown tables)
+5. Use `<Tooltip>` for key terms on first occurrence
+6. Add internal links with the full base path
+7. Add the slug to `astro.config.mjs` sidebar when ready to publish
