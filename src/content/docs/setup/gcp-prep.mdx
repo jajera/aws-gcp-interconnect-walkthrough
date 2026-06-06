@@ -1,0 +1,59 @@
+---
+title: GCP API Prep
+description: Step 2b — Enable Network Connectivity API and create the service agent (one-time per project).
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## Step 2b — GCP prep (before first `transports create`)
+
+<Tooltip term="terraform" /> creates `demo-vpc-network` but not the Network Connectivity service agent. Do this once per <Tooltip term="gcp" /> project:
+
+```bash
+export GCP_PROJECT="$(terraform output -raw gcp_project_id)"
+
+gcloud services enable networkconnectivity.googleapis.com --project="$GCP_PROJECT"
+
+# Confirm API is enabled
+gcloud services list --enabled --project="$GCP_PROJECT" \
+  --filter="name:networkconnectivity.googleapis.com"
+
+# Required if create fails with gcp-sa-networkconnectivity ... Not found
+gcloud beta services identity create \
+  --service=networkconnectivity.googleapis.com \
+  --project="$GCP_PROJECT"
+```
+
+<Aside type="tip">
+Wait 2–5 minutes after `services identity create` before running the transport create in Step 4.
+</Aside>
+
+## Pre-flight: reach each VM locally (Step 2c)
+
+Before moving to the interconnect steps, confirm you can reach both VMs through their respective management channels:
+
+### AWS — SSM Session Manager
+
+```bash
+aws ssm start-session \
+  --target "$(terraform output -raw aws_instance_id)" \
+  --region "$(terraform output -raw aws_region)"
+```
+
+If <Tooltip term="ssm" /> fails, wait 2–3 minutes after apply for VPC endpoints to become ready and the SSM agent to register.
+
+### GCP — IAP tunnel SSH
+
+```bash
+terraform output -raw gce_ssh_private_key > demo-gce-key
+chmod 600 demo-gce-key
+
+gcloud compute ssh "$(terraform output -raw gce_instance_name)" \
+  --zone="$(terraform output -raw gce_instance_zone)" \
+  --project="$(terraform output -raw gcp_project_id)" \
+  --tunnel-through-iap \
+  --ssh-key-file=demo-gce-key
+```
+
+Both working? You're ready for the [Interconnect steps](/aws-gcp-interconnect-walkthrough/interconnect/).

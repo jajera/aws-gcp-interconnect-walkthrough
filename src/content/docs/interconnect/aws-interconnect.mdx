@@ -1,0 +1,70 @@
+---
+title: AWS Interconnect (Console)
+description: Step 3 — Create the multicloud interconnect in the AWS console and get the activation key.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## Step 3 — Create the multicloud Interconnect (AWS console)
+
+<Steps>
+
+1. Open the [AWS Interconnect console](https://us-east-1.console.aws.amazon.com/directconnect/v2/home?region=ap-southeast-1#/aws-interconnect) — set `region=` in the URL to your `aws_region` (e.g. `terraform output -raw aws_region`).
+
+2. On the **Connection types** page, select **AWS Interconnect – multicloud (paid)**, then **Get started**.
+
+   <Aside type="tip">
+   Use **AWS Interconnect – multicloud – Free Tier** instead if you still have quota (one free 500 Mbps interconnect per AWS Region per CSP). If Free Tier fails with a billing or "free trial" error, the quota may be exhausted — paid multicloud is the usual fallback.
+   </Aside>
+
+   <Aside type="caution">
+   **Cost note:** Paid AWS interconnect is $1.37/hr at Tier 1 / 1 Gbps (APAC local pair). GCP transport is separate ($5/hr) — see [Cost Estimate](/aws-gcp-interconnect-walkthrough/prerequisites/cost-estimate/).
+   </Aside>
+
+3. **Select a provider** — choose **Google Cloud**, then Next.
+
+4. **Select regions** — pick your paired regions, then Next:
+
+   <table>
+     <thead>
+       <tr>
+         <th>Field</th>
+         <th>Value</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr><td>AWS Region</td><td>Your <code>aws_region</code> (e.g. <code>ap-southeast-1</code>)</td></tr>
+       <tr><td>Google Cloud Region</td><td>Your paired <code>gcp_region</code> (e.g. <code>asia-southeast1</code>)</td></tr>
+     </tbody>
+   </table>
+
+5. **Configure options**, then Next:
+
+   <table>
+     <thead>
+       <tr>
+         <th>Field</th>
+         <th>Value</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr><td>Description</td><td>e.g. <code>demo-interconnect</code> (lowercase, numbers, hyphens; max 100 chars)</td></tr>
+       <tr><td>Bandwidth</td><td>1 Gbps (paid) — or 500 Mbps on Free Tier</td></tr>
+       <tr><td>Direct Connect gateway</td><td>Select <code>demo-dx-gateway</code> — or paste <code>terraform output -raw aws_dx_gateway_id</code></td></tr>
+       <tr><td>Google Cloud project ID</td><td>Your <code>gcp_project_id</code> (e.g. <code>prj-core-123456</code>)</td></tr>
+       <tr><td>Tags</td><td>Optional</td></tr>
+     </tbody>
+   </table>
+
+6. **Review** the summary, then **Finish**.
+
+   <Aside type="note">
+   **Free Tier only:** If you see `InterconnectValidationException: Unable to create free trial connection`, see [Billing verification failed](/aws-gcp-interconnect-walkthrough/troubleshooting/billing-verification/) — or switch to paid multicloud (step 2 above).
+   </Aside>
+
+7. **Copy the activation key** displayed when the request completes — you need it in Step 4.
+
+</Steps>
+
+The <Tooltip term="interconnect" label="Interconnect" /> status stays **Pending** until the GCP <Tooltip term="transport" label="transport" /> (Step 4) and <Tooltip term="vpc-peering" label="peering" /> (Step 5) complete.

@@ -1,0 +1,43 @@
+---
+title: VPC Peering (GCP)
+description: Step 5 — Peer your workload VPC to the transport's managed peering network so routes flow.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Tooltip from '@/components/Tooltip.astro';
+
+## Step 5 — VPC network peering
+
+The <Tooltip term="transport" label="transport" /> creates a managed peering network. Peer your workload <Tooltip term="vpc" /> to it so routes flow to your <Tooltip term="gce" /> VM.
+
+```bash
+export PEERING_NETWORK="$(gcloud beta network-connectivity transports describe "$TRANSPORT_NAME" \
+  --region="$GCP_REGION" \
+  --format='value(peeringNetwork)')"
+export PEERING_NAME="demo-aws-peering"
+
+gcloud compute networks peerings create "$PEERING_NAME" \
+  --network="$GCP_NETWORK" \
+  --peer-network="$PEERING_NETWORK" \
+  --stack-type=IPV4_ONLY \
+  --import-custom-routes \
+  --export-custom-routes
+```
+
+### Verify peering is active
+
+```bash
+gcloud compute networks peerings list --network="$GCP_NETWORK"
+```
+
+You should see `STATE: ACTIVE` and `STATE_DETAILS: Connected`.
+
+<Aside type="note">
+**MTU warning (expected):** The create command may warn that your VPC MTU (1460 B) does not match the transport peer MTU (8896 B). This is normal for <Tooltip term="partner-cci" label="Partner Cross-Cloud Interconnect" />. ICMP ping works with the default MTU; large TCP transfers may need MTU tuning in production ([GCP docs](https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner-cci-for-aws/create-vpc-peering-aws-to-gcp)).
+</Aside>
+
+## What happens next
+
+After Step 5, <Tooltip term="gcp" /> configuration is complete. The interconnect stays **Pending** on AWS until backend provisioning finishes — often 5–30 minutes.
+
+Poll in [Step 6 (Verify Routing)](/aws-gcp-interconnect-walkthrough/verify/routing/); do **not** recreate transport or peering while waiting.

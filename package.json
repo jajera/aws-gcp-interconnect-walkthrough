@@ -1,0 +1,24 @@
+{
+  "name": "aws-gcp-interconnect-walkthrough",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=18.20.8"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.39.3",
+    "astro": "^6.4.4",
+    "starlight-theme-vintage": "^0.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/simple-icons": "^1.2.72",
+    "unplugin-icons": "^23.0.1"
+  }
+}

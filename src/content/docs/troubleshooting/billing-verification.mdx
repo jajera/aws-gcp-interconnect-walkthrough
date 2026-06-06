@@ -1,0 +1,73 @@
+---
+title: Billing Verification (Free Tier)
+description: Fixing the "Unable to create free trial connection" error when using AWS Interconnect Free Tier.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+<Aside type="note">
+This page applies only when using **AWS Interconnect – multicloud – Free Tier**. Paid multicloud does not use the "free trial connection" path — if Free Tier fails, switch to paid (Step 3).
+</Aside>
+
+## The error
+
+```
+InterconnectValidationException: Unable to create free trial connection.
+Your account's billing information could not be verified. Please try again later.
+```
+
+The Free Tier is $0 on AWS for bandwidth, but AWS still checks that the account paying for the account (the management / payer account in Organizations, or the standalone root account) has a valid, verified card on file.
+
+## Fix (management / root account)
+
+<Steps>
+
+1. Sign in to the AWS account that owns billing (management account payer, not necessarily the member account where Terraform ran).
+
+2. Open [Payment methods](https://console.aws.amazon.com/billing/home#/paymentmethods) (Billing and Cost Management → Payment preferences).
+
+3. Confirm a default payment method exists and shows **Verified** (not Pending or Failed).
+
+4. If unverified:
+   - Update billing address to match your bank exactly
+   - Remove and re-add the card; complete any 3-D Secure / bank redirect prompt
+   - Ask your bank to allow small AWS authorization charges (often ~USD 1; cancelled immediately)
+   - Ensure international / online transactions are enabled on the card
+
+5. Wait up to 24 hours after adding or fixing a card, then retry Step 3 Finish.
+
+6. If it still fails, open a billing support case (free): [AWS Support → Create case](https://console.aws.amazon.com/support/home#/case/create) → Account and billing.
+
+</Steps>
+
+<Aside type="caution">
+**Organizations note:** If Terraform and the DX Gateway are in a member account, billing verification still runs against the organization management (payer) account. Fix payment methods there, not only in the member account.
+</Aside>
+
+## Payment already shows Verified but error persists?
+
+The console "Verified" badge is not always the same check Interconnect uses for Free Tier eligibility. Work through:
+
+1. **Confirm account ID** — note the 12-digit account when you click Finish. Interconnect is created in that account; in Organizations, ensure the payer account is the one with verified billing.
+
+2. **Account fully active** — Billing → Account: no incomplete signup, no past-due invoices, no pending identity verification.
+
+3. **Billing history** — some new accounts show a verified card but fail product-specific checks until at least one successful charge has posted. Wait 24–72 hours and retry.
+
+4. **Card type** — prepaid, virtual, or corporate cards with restricted authorizations can fail backend checks even when the UI shows Verified. Try a standard credit card.
+
+5. **Free Tier already used** — one free 500 Mbps interconnect per AWS Region per CSP; a prior attempt may have consumed the quota even if the connection failed or was deleted.
+
+6. **Organizations SCPs** — ensure SCPs allow `interconnect:*` (separate from `directconnect:*`).
+
+7. **Open a billing support case (free)** — include the exact error, account ID, region, and that payment methods show Verified. Ask them to enable Free Tier interconnect / resolve the backend billing verification flag.
+
+## When to give up on Free Tier
+
+Same error on the management (payer) account after all checks? That usually means Interconnect's internal free-trial eligibility check is still failing — common with new accounts, invoice/PO billing, or prepaid cards. Only AWS Support can clear the backend flag.
+
+**Practical fallback:** Use **AWS Interconnect – multicloud (paid, 1 Gbps)** — it bypasses all Free Tier eligibility checks entirely.
+
+<Aside type="tip">
+**Account alignment:** Create the interconnect in the same AWS account where Terraform created the Direct Connect gateway (`terraform output -raw aws_dx_gateway_id`). Switching to the management account for billing does not help if the DXGW and VPC live in a member account.
+</Aside>
