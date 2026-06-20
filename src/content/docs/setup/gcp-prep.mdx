@@ -3,12 +3,13 @@ title: GCP API Prep
 description: Step 2b — Enable Network Connectivity API and create the service agent (one-time per project).
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Step 2b — GCP prep (before first `transports create`)
 
-<Tooltip term="terraform" /> creates `demo-vpc-network` but not the Network Connectivity service agent. Do this once per <Tooltip term="gcp" /> project:
+<Tooltip term="terraform" /> creates `demo-vpc-network` but not the Network Connectivity service
+agent. Do this once per <Tooltip term="gcp" /> project:
 
 ```bash
 export GCP_PROJECT="$(terraform output -raw gcp_project_id)"
@@ -26,7 +27,7 @@ gcloud beta services identity create \
 ```
 
 <Aside type="tip">
-Wait 2–5 minutes after `services identity create` before running the transport create in Step 4.
+  Wait 2–5 minutes after `services identity create` before running the transport create in Step 4.
 </Aside>
 
 ## Pre-flight: reach each VM locally (Step 2c)

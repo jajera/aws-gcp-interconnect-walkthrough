@@ -3,8 +3,8 @@ title: Connectivity Test
 description: Step 7 — Ping EC2 ↔ GCE over the interconnect to confirm end-to-end private connectivity.
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside, Steps } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Step 7 — End-to-end connectivity test
 
@@ -62,11 +62,14 @@ gcloud compute ssh "$(terraform output -raw gce_instance_name)" \
 ```
 
 <Aside type="caution">
-`gcloud compute ssh --ssh-key-file` requires both private and `.pub` files. Do **not** answer `y` if gcloud offers to overwrite broken keys — that would replace the Terraform key with a new one the VM does not trust.
+  `gcloud compute ssh --ssh-key-file` requires both private and `.pub` files. Do **not** answer `y`
+  if gcloud offers to overwrite broken keys — that would replace the Terraform key with a new one
+  the VM does not trust.
 </Aside>
 
 <Aside type="danger">
-These files contain secrets. They are listed in `.gitignore` (`demo-gce-key`, `demo-gce-key.pub`) — do not commit them. Remove them during [Teardown](/aws-gcp-interconnect-walkthrough/teardown/).
+  These files contain secrets. They are listed in `.gitignore` (`demo-gce-key`, `demo-gce-key.pub`)
+  — do not commit them. Remove them during [Teardown](/aws-gcp-interconnect-walkthrough/teardown/).
 </Aside>
 
 From the GCE shell, ping using the AWS IP you printed above:

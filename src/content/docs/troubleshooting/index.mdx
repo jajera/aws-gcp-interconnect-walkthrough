@@ -3,8 +3,8 @@ title: Troubleshooting
 description: Common issues, error states, and how to diagnose problems.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Quick reference
 
@@ -17,18 +17,80 @@ import Tooltip from '@/components/Tooltip.astro';
     </tr>
   </thead>
   <tbody>
-    <tr><td>Interconnect stuck Pending</td><td>GCP transport or peering not created; AWS provisioning</td><td>Complete Steps 4–5; check AWS console; wait 15–30 min</td></tr>
-    <tr><td><code>aws interconnect</code> invalid choice</td><td>AWS CLI too old (&lt; 2.34.43)</td><td>Use console for status, or upgrade CLI</td></tr>
-    <tr><td>GCP list-routes shows 0 incoming</td><td>AWS interconnect not Available yet</td><td>Wait for AWS Available; then re-check</td></tr>
-    <tr><td>Transport PENDING_CONFIG after peering</td><td>Normal until AWS backend completes</td><td>Check AWS status; peering ACTIVE is GCP-side success</td></tr>
-    <tr><td><code>aws_dx_gateway_association</code> pending</td><td>Interconnect not active yet</td><td>Wait for Available; check activation key</td></tr>
-    <tr><td>EC2 SSM session fails</td><td>VPC endpoints not ready or IAM</td><td>Wait 2–3 min after apply; confirm SSM agent</td></tr>
-    <tr><td>GCE SSH via IAP fails</td><td>Missing IAP firewall rule</td><td>Rule <code>demo-allow-iap-ssh</code> allows <code>35.235.240.0/20</code></td></tr>
-    <tr><td>Ping fails both ways</td><td>Route or peering issue</td><td>Re-check <code>--import-custom-routes</code> / <code>--export-custom-routes</code></td></tr>
-    <tr><td>Wrong region pair</td><td>Unsupported Interconnect path</td><td>Run <code>remote-profiles list</code>; align regions</td></tr>
-    <tr><td>Free Tier billing error</td><td>Quota used or eligibility failed</td><td>Use paid multicloud — see Billing Verification</td></tr>
-    <tr><td>MTU warning at peering create</td><td>Default GCP VPC MTU vs transport jumbo MTU</td><td>Expected — safe for ICMP; tune for large TCP</td></tr>
-    <tr><td>Interconnect <code>failed</code> (no error)</td><td>Org SCP blocking <code>interconnect:*</code> or VPC-SC</td><td>See Checking for Errors</td></tr>
+    <tr>
+      <td>Interconnect stuck Pending</td>
+      <td>GCP transport or peering not created; AWS provisioning</td>
+      <td>Complete Steps 4–5; check AWS console; wait 15–30 min</td>
+    </tr>
+    <tr>
+      <td>
+        <code>aws interconnect</code> invalid choice
+      </td>
+      <td>AWS CLI too old (&lt; 2.34.43)</td>
+      <td>Use console for status, or upgrade CLI</td>
+    </tr>
+    <tr>
+      <td>GCP list-routes shows 0 incoming</td>
+      <td>AWS interconnect not Available yet</td>
+      <td>Wait for AWS Available; then re-check</td>
+    </tr>
+    <tr>
+      <td>Transport PENDING_CONFIG after peering</td>
+      <td>Normal until AWS backend completes</td>
+      <td>Check AWS status; peering ACTIVE is GCP-side success</td>
+    </tr>
+    <tr>
+      <td>
+        <code>aws_dx_gateway_association</code> pending
+      </td>
+      <td>Interconnect not active yet</td>
+      <td>Wait for Available; check activation key</td>
+    </tr>
+    <tr>
+      <td>EC2 SSM session fails</td>
+      <td>VPC endpoints not ready or IAM</td>
+      <td>Wait 2–3 min after apply; confirm SSM agent</td>
+    </tr>
+    <tr>
+      <td>GCE SSH via IAP fails</td>
+      <td>Missing IAP firewall rule</td>
+      <td>
+        Rule <code>demo-allow-iap-ssh</code> allows <code>35.235.240.0/20</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Ping fails both ways</td>
+      <td>Route or peering issue</td>
+      <td>
+        Re-check <code>--import-custom-routes</code> / <code>--export-custom-routes</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Wrong region pair</td>
+      <td>Unsupported Interconnect path</td>
+      <td>
+        Run <code>remote-profiles list</code>; align regions
+      </td>
+    </tr>
+    <tr>
+      <td>Free Tier billing error</td>
+      <td>Quota used or eligibility failed</td>
+      <td>Use paid multicloud — see Billing Verification</td>
+    </tr>
+    <tr>
+      <td>MTU warning at peering create</td>
+      <td>Default GCP VPC MTU vs transport jumbo MTU</td>
+      <td>Expected — safe for ICMP; tune for large TCP</td>
+    </tr>
+    <tr>
+      <td>
+        Interconnect <code>failed</code> (no error)
+      </td>
+      <td>
+        Org SCP blocking <code>interconnect:*</code> or VPC-SC
+      </td>
+      <td>See Checking for Errors</td>
+    </tr>
   </tbody>
 </table>
 

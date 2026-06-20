@@ -3,6 +3,7 @@
 ## Commit Messages
 
 Follow Conventional Commits format:
+
 - `feat:` — new functionality
 - `fix:` — bug fix
 - `docs:` — documentation only
@@ -51,6 +52,7 @@ The content for this documentation site comes from the Terraform project at:
 ## New Page Checklist
 
 When adding a new content page:
+
 1. Create the `.mdx` file in the appropriate `src/content/docs/` subdirectory
 2. Add frontmatter with `title` and `description`
 3. Import Tooltip and any needed Starlight components

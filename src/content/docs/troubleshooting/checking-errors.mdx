@@ -3,7 +3,7 @@ title: Checking for Errors
 description: Decision tree and diagnostic commands when the interconnect enters a failed or stuck state.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 ## When to worry
 
@@ -29,7 +29,9 @@ aws cloudtrail lookup-events \
 ```
 
 <Aside type="note">
-A `"state": "pending"` API response does not guarantee backend provisioning succeeds. Failures during provisioning may not surface as explicit errors ([re:Post guide](https://repost.aws/articles/ARU_FMBmrUQYG2hIPezn-XRQ/aws-multicloud-interconnect-failures-aws-to-gcp)).
+  A `"state": "pending"` API response does not guarantee backend provisioning succeeds. Failures
+  during provisioning may not surface as explicit errors ([re:Post
+  guide](https://repost.aws/articles/ARU_FMBmrUQYG2hIPezn-XRQ/aws-multicloud-interconnect-failures-aws-to-gcp)).
 </Aside>
 
 ## AWS — Organization SCPs

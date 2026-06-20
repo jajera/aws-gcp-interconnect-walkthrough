@@ -3,8 +3,8 @@ title: Overview
 description: What AWS Interconnect is, why it matters for GCP connectivity, and what this demo proves.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## The story
 
@@ -50,19 +50,29 @@ EC2 → <Tooltip term="vgw" /> → <Tooltip term="dx-gateway" label="DX Gateway"
   </thead>
   <tbody>
     <tr>
-      <td><code>aws_dx_gateway</code></td>
+      <td>
+        <code>aws_dx_gateway</code>
+      </td>
       <td>Attach point for the multicloud Interconnect (console Step 3)</td>
     </tr>
     <tr>
-      <td><code>aws_vpc</code>, subnet, VGW, route table</td>
+      <td>
+        <code>aws_vpc</code>, subnet, VGW, route table
+      </td>
       <td>AWS workload network</td>
     </tr>
     <tr>
-      <td><code>aws_dx_gateway_association</code></td>
-      <td>Links VGW to DX Gateway; advertises <code>aws_vpc_cidr</code> toward GCP</td>
+      <td>
+        <code>aws_dx_gateway_association</code>
+      </td>
+      <td>
+        Links VGW to DX Gateway; advertises <code>aws_vpc_cidr</code> toward GCP
+      </td>
     </tr>
     <tr>
-      <td><code>aws_instance</code> + SSM</td>
+      <td>
+        <code>aws_instance</code> + SSM
+      </td>
       <td>Demo EC2 in a private subnet (reachable via Session Manager)</td>
     </tr>
     <tr>
@@ -70,11 +80,15 @@ EC2 → <Tooltip term="vgw" /> → <Tooltip term="dx-gateway" label="DX Gateway"
       <td>SSM connectivity without a bastion or NAT</td>
     </tr>
     <tr>
-      <td><code>google_compute_network</code>, subnet, firewall</td>
+      <td>
+        <code>google_compute_network</code>, subnet, firewall
+      </td>
       <td>GCP workload network</td>
     </tr>
     <tr>
-      <td><code>google_compute_instance</code></td>
+      <td>
+        <code>google_compute_instance</code>
+      </td>
       <td>Demo GCE VM (reachable via IAP tunnel SSH)</td>
     </tr>
   </tbody>
@@ -112,7 +126,10 @@ These steps are documented in this walkthrough but not yet automatable via <Tool
 </table>
 
 <Aside type="note">
-When provider support lands ([terraform-provider-aws#47458](https://github.com/hashicorp/terraform-provider-aws/issues/47458)), these steps can move into Terraform. Until then, this walkthrough is the source of truth for the interconnect layer.
+  When provider support lands
+  ([terraform-provider-aws#47458](https://github.com/hashicorp/terraform-provider-aws/issues/47458)),
+  these steps can move into Terraform. Until then, this walkthrough is the source of truth for the
+  interconnect layer.
 </Aside>
 
 ## Walkthrough checklist
@@ -140,7 +157,9 @@ Track your progress. Steps 3–5 are not in Terraform — they must be removed m
     <tr>
       <td>2</td>
       <td>Base infra (VPC, EC2, GCE, DXGW, …)</td>
-      <td><code>terraform apply</code></td>
+      <td>
+        <code>terraform apply</code>
+      </td>
       <td>Yes</td>
       <td>Yes (~$30–40/mo)</td>
     </tr>

@@ -3,11 +3,13 @@ title: Teardown
 description: Delete interconnect resources in the correct order, then terraform destroy.
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside, Steps } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 <Aside type="danger">
-`terraform destroy` does **not** delete the AWS interconnect, GCP transport, or VPC peering. Skipping manual teardown leaves ~$6+/hr combined (paid AWS + GCP transport) billing until you remove them.
+  `terraform destroy` does **not** delete the AWS interconnect, GCP transport, or VPC peering.
+  Skipping manual teardown leaves ~$6+/hr combined (paid AWS + GCP transport) billing until you
+  remove them.
 </Aside>
 
 ## Teardown order
@@ -23,12 +25,40 @@ Delete interconnect resources in this order, then destroy <Tooltip term="terrafo
     </tr>
   </thead>
   <tbody>
-    <tr><td>1</td><td>GCP VPC peering</td><td>—</td></tr>
-    <tr><td>2</td><td>GCP transport</td><td>~$5/hr GCP</td></tr>
-    <tr><td>3</td><td>AWS multicloud Interconnect</td><td>~$1.37/hr AWS (after delete completes)</td></tr>
-    <tr><td>4</td><td>Wait — AWS list-connections empty</td><td>—</td></tr>
-    <tr><td>5</td><td><code>terraform destroy</code></td><td>~$30–40/mo base infra</td></tr>
-    <tr><td>6</td><td>Remove <code>demo-gce-key*</code></td><td>— (gitignored secrets)</td></tr>
+    <tr>
+      <td>1</td>
+      <td>GCP VPC peering</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>GCP transport</td>
+      <td>~$5/hr GCP</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>AWS multicloud Interconnect</td>
+      <td>~$1.37/hr AWS (after delete completes)</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Wait — AWS list-connections empty</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>
+        <code>terraform destroy</code>
+      </td>
+      <td>~$30–40/mo base infra</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>
+        Remove <code>demo-gce-key*</code>
+      </td>
+      <td>— (gitignored secrets)</td>
+    </tr>
   </tbody>
 </table>
 
@@ -113,9 +143,22 @@ aws interconnect list-connections --region "$AWS_REGION" \
     </tr>
   </thead>
   <tbody>
-    <tr><td>Empty table</td><td>Yes</td></tr>
-    <tr><td>state: <code>deleting</code></td><td>No — wait</td></tr>
-    <tr><td>state: <code>available</code></td><td>No — delete not started or failed</td></tr>
+    <tr>
+      <td>Empty table</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>
+        state: <code>deleting</code>
+      </td>
+      <td>No — wait</td>
+    </tr>
+    <tr>
+      <td>
+        state: <code>available</code>
+      </td>
+      <td>No — delete not started or failed</td>
+    </tr>
   </tbody>
 </table>
 
@@ -146,5 +189,6 @@ rm -f demo-gce-key demo-gce-key.pub
 ```
 
 <Aside type="caution">
-If you skip this step, the private key stays in the repo directory. `.gitignore` prevents accidental `git add`, but delete the files anyway — especially on shared machines.
+  If you skip this step, the private key stays in the repo directory. `.gitignore` prevents
+  accidental `git add`, but delete the files anyway — especially on shared machines.
 </Aside>

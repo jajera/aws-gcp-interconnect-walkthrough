@@ -1,13 +1,6 @@
 {
   "version": "0.2",
   "language": "en",
-  "words": [
-    "astro",
-    "astrojs",
-    "starlight",
-    "jajera",
-    "interconnect",
-    "walkthrough"
-  ],
+  "words": ["astro", "astrojs", "starlight", "jajera", "interconnect", "walkthrough"],
   "ignorePaths": ["node_modules", "dist", ".astro"]
 }

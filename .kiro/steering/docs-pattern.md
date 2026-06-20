@@ -32,8 +32,8 @@ To hide a page from production builds, add `draft: true`.
 Every content page should import Tooltip and relevant Starlight components:
 
 ```mdx
-import { Aside, Steps } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside, Steps } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 ```
 
 ## MDX Rules
@@ -41,7 +41,7 @@ import Tooltip from '@/components/Tooltip.astro';
 - **Tables**: Always use HTML `<table>` in MDX — never markdown tables. See `markdown-tables.md`.
 - **CardGrid**: Use `<CardGrid>` without `stagger` for uniform card layout. The `stagger` prop offsets cards unevenly.
 - Indent code blocks inside Starlight components (e.g. `<Steps>`, `<Tabs>`) by 2 spaces.
-- Use fenced code blocks with language identifiers: ```bash, ```hcl, ```json.
+- Use fenced code blocks with language identifiers: `bash, `hcl, ```json.
 - Ensure a blank line before and after every HTML block (`<table>`, `<Aside>`, etc.).
 - Inline code in HTML elements uses `<code>`, not backticks.
 
