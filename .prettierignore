@@ -2,3 +2,5 @@ dist
 node_modules
 .astro
 *.min.js
+package-lock.json
+public/og-image.png
