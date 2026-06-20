@@ -30,10 +30,7 @@ export function splitFrontmatter(content: string): {
   return { frontmatter: match[1], body: match[2] };
 }
 
-export function parseFrontmatterField(
-  frontmatter: string,
-  field: string,
-): string | undefined {
+export function parseFrontmatterField(frontmatter: string, field: string): string | undefined {
   const line = frontmatter.split("\n").find((l) => l.startsWith(`${field}:`));
   if (!line) return undefined;
   const value = line.slice(field.length + 1).trim();
