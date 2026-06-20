@@ -3,8 +3,8 @@ title: VPC Peering (GCP)
 description: Step 5 — Peer your workload VPC to the transport's managed peering network so routes flow.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Step 5 — VPC network peering
 
@@ -33,7 +33,11 @@ gcloud compute networks peerings list --network="$GCP_NETWORK"
 You should see `STATE: ACTIVE` and `STATE_DETAILS: Connected`.
 
 <Aside type="note">
-**MTU warning (expected):** The create command may warn that your VPC MTU (1460 B) does not match the transport peer MTU (8896 B). This is normal for <Tooltip term="partner-cci" label="Partner Cross-Cloud Interconnect" />. ICMP ping works with the default MTU; large TCP transfers may need MTU tuning in production ([GCP docs](https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner-cci-for-aws/create-vpc-peering-aws-to-gcp)).
+  **MTU warning (expected):** The create command may warn that your VPC MTU (1460 B) does not match
+  the transport peer MTU (8896 B). This is normal for{" "}
+  <Tooltip term="partner-cci" label="Partner Cross-Cloud Interconnect" />. ICMP ping works with the
+  default MTU; large TCP transfers may need MTU tuning in production ([GCP
+  docs](https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner-cci-for-aws/create-vpc-peering-aws-to-gcp)).
 </Aside>
 
 ## What happens next

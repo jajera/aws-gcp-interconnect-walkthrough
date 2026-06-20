@@ -3,8 +3,8 @@ title: Configure Variables
 description: Step 1 — Edit terraform.tfvars with your AWS and GCP project details.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Step 1 — Configure variables
 
@@ -24,14 +24,16 @@ aws_dx_gateway_asn = 64512           # private ASN for the DX Gateway
 gcp_vpc_cidr = "10.1.0.0/16"        # advertised toward AWS
 ```
 
-<Tooltip term="terraform" /> generates an ED25519 SSH key pair for the <Tooltip term="gce" /> `debian` user automatically. You'll retrieve the private key after apply (see [Step 7](/aws-gcp-interconnect-walkthrough/verify/connectivity-test/)).
+<Tooltip term="terraform" /> generates an ED25519 SSH key pair for the <Tooltip term="gce" />
+`debian` user automatically. You'll retrieve the private key after apply (see [Step
+7](/aws-gcp-interconnect-walkthrough/verify/connectivity-test/)).
 
 ## CIDR rules
 
 <Aside type="caution">
-- `aws_vpc_cidr` and `gcp_vpc_cidr` **must not overlap**.
-- `aws_subnet_cidr` must fit inside `aws_vpc_cidr`.
-- These <Tooltip term="cidr" label="CIDRs" /> are exchanged across the Interconnect — keep them stable before Step 3.
+  - `aws_vpc_cidr` and `gcp_vpc_cidr` **must not overlap**. - `aws_subnet_cidr` must fit inside
+  `aws_vpc_cidr`. - These <Tooltip term="cidr" label="CIDRs" /> are exchanged across the
+  Interconnect — keep them stable before Step 3.
 </Aside>
 
 ## Variable reference
@@ -44,14 +46,54 @@ gcp_vpc_cidr = "10.1.0.0/16"        # advertised toward AWS
     </tr>
   </thead>
   <tbody>
-    <tr><td><code>aws_region</code></td><td>AWS region (Interconnect source)</td></tr>
-    <tr><td><code>gcp_region</code></td><td>Paired GCP region (Interconnect destination)</td></tr>
-    <tr><td><code>gcp_project_id</code></td><td>GCP project ID</td></tr>
-    <tr><td><code>gcp_transport_name</code></td><td>Name for the gcloud transport resource</td></tr>
-    <tr><td><code>aws_vpc_cidr</code></td><td>AWS VPC CIDR — advertised to GCP</td></tr>
-    <tr><td><code>aws_subnet_cidr</code></td><td>AWS private subnet for EC2</td></tr>
-    <tr><td><code>aws_dx_gateway_asn</code></td><td>Private ASN for the Direct Connect Gateway</td></tr>
-    <tr><td><code>gcp_vpc_cidr</code></td><td>GCP subnet CIDR — advertised to AWS</td></tr>
+    <tr>
+      <td>
+        <code>aws_region</code>
+      </td>
+      <td>AWS region (Interconnect source)</td>
+    </tr>
+    <tr>
+      <td>
+        <code>gcp_region</code>
+      </td>
+      <td>Paired GCP region (Interconnect destination)</td>
+    </tr>
+    <tr>
+      <td>
+        <code>gcp_project_id</code>
+      </td>
+      <td>GCP project ID</td>
+    </tr>
+    <tr>
+      <td>
+        <code>gcp_transport_name</code>
+      </td>
+      <td>Name for the gcloud transport resource</td>
+    </tr>
+    <tr>
+      <td>
+        <code>aws_vpc_cidr</code>
+      </td>
+      <td>AWS VPC CIDR — advertised to GCP</td>
+    </tr>
+    <tr>
+      <td>
+        <code>aws_subnet_cidr</code>
+      </td>
+      <td>AWS private subnet for EC2</td>
+    </tr>
+    <tr>
+      <td>
+        <code>aws_dx_gateway_asn</code>
+      </td>
+      <td>Private ASN for the Direct Connect Gateway</td>
+    </tr>
+    <tr>
+      <td>
+        <code>gcp_vpc_cidr</code>
+      </td>
+      <td>GCP subnet CIDR — advertised to AWS</td>
+    </tr>
   </tbody>
 </table>
 

@@ -3,13 +3,17 @@ title: Prerequisites
 description: Accounts, tools, authentication, and cost estimates before you begin.
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside, Steps } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 Before diving in, make sure you have the right accounts, tools, and credentials. This section also covers cost expectations so there are no surprises.
 
 <Aside type="tip">
-This walkthrough targets the **<Tooltip term="aws" /> ↔ <Tooltip term="gcp" label="Google Cloud" />** path — the only GA partner for [AWS Interconnect – multicloud](https://aws.amazon.com/interconnect/) as of this writing (April 2026). Azure and OCI support is announced but not yet available.
+  This walkthrough targets the **
+  <Tooltip term="aws" /> ↔ <Tooltip term="gcp" label="Google Cloud" />
+  ** path — the only GA partner for [AWS Interconnect –
+  multicloud](https://aws.amazon.com/interconnect/) as of this writing (April 2026). Azure and OCI
+  support is announced but not yet available.
 </Aside>
 
 ## Accounts and permissions
@@ -61,7 +65,8 @@ gcloud services enable compute.googleapis.com networkconnectivity.googleapis.com
 </table>
 
 <Aside type="caution">
-AWS CLI builds older than 2.34.43 lack the `interconnect` namespace (`Found invalid choice 'interconnect'`). Legacy AWS CLI v1 (`pip install awscli`) never includes it.
+  AWS CLI builds older than 2.34.43 lack the `interconnect` namespace (`Found invalid choice
+  'interconnect'`). Legacy AWS CLI v1 (`pip install awscli`) never includes it.
 </Aside>
 
 ## Authentication
@@ -76,7 +81,9 @@ gcloud config set project YOUR_GCP_PROJECT_ID
 gcloud auth application-default set-quota-project YOUR_GCP_PROJECT_ID
 ```
 
-<Tooltip term="terraform" /> and the Google provider read credentials from <Tooltip term="adc" />, not from `gcloud config`. After `gcloud config set project`, align the ADC quota project to the same GCP project — otherwise you may see a mismatch warning and hit unexpected quota/billing issues:
+<Tooltip term="terraform" /> and the Google provider read credentials from <Tooltip term="adc" />,
+not from `gcloud config`. After `gcloud config set project`, align the ADC quota project to the same
+GCP project — otherwise you may see a mismatch warning and hit unexpected quota/billing issues:
 
 ```
 WARNING: Your active project does not match the quota project in your local
@@ -87,14 +94,19 @@ Run `set-quota-project` whenever you switch GCP projects for this demo.
 
 ## Region pairing
 
-<Tooltip term="interconnect" label="Interconnect" /> is region-to-region. Pick a supported pair before editing `terraform.tfvars`.
+<Tooltip term="interconnect" label="Interconnect" /> is region-to-region. Pick a supported pair
+before editing `terraform.tfvars`.
 
 <Aside type="tip">
-Authoritative list: [AWS Interconnect regional availability](https://docs.aws.amazon.com/interconnect/latest/userguide/region-availability.html) (GCP mirror: [paired locations](https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner-cci-for-aws/paired-locations)).
+  Authoritative list: [AWS Interconnect regional
+  availability](https://docs.aws.amazon.com/interconnect/latest/userguide/region-availability.html)
+  (GCP mirror: [paired
+  locations](https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner-cci-for-aws/paired-locations)).
 </Aside>
 
 <Aside type="caution">
-`ap-southeast-2` (Sydney) is **not** a supported Interconnect pair. The nearest APAC option is `ap-southeast-1` ↔ `asia-southeast1` (Singapore).
+  `ap-southeast-2` (Sydney) is **not** a supported Interconnect pair. The nearest APAC option is
+  `ap-southeast-1` ↔ `asia-southeast1` (Singapore).
 </Aside>
 
 The following region pairs are available:
@@ -107,12 +119,30 @@ The following region pairs are available:
     </tr>
   </thead>
   <tbody>
-    <tr><td>ap-southeast-1</td><td>asia-southeast1</td></tr>
-    <tr><td>us-east-1</td><td>us-east4</td></tr>
-    <tr><td>us-west-2</td><td>us-west1</td></tr>
-    <tr><td>us-west-1</td><td>us-west2</td></tr>
-    <tr><td>eu-west-2</td><td>europe-west2</td></tr>
-    <tr><td>eu-central-1</td><td>europe-west3</td></tr>
+    <tr>
+      <td>ap-southeast-1</td>
+      <td>asia-southeast1</td>
+    </tr>
+    <tr>
+      <td>us-east-1</td>
+      <td>us-east4</td>
+    </tr>
+    <tr>
+      <td>us-west-2</td>
+      <td>us-west1</td>
+    </tr>
+    <tr>
+      <td>us-west-1</td>
+      <td>us-west2</td>
+    </tr>
+    <tr>
+      <td>eu-west-2</td>
+      <td>europe-west2</td>
+    </tr>
+    <tr>
+      <td>eu-central-1</td>
+      <td>europe-west3</td>
+    </tr>
   </tbody>
 </table>
 

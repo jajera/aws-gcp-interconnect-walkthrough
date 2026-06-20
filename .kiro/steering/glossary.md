@@ -22,21 +22,27 @@ fileMatchPattern: "src/data/glossary*"
 ## Usage in pages
 
 ```mdx
-import Tooltip from '@/components/Tooltip.astro';
+import Tooltip from "@/components/Tooltip.astro";
 
 <!-- Uppercase display (default) -->
+
 <Tooltip term="aws" />
 
 <!-- Custom display text -->
+
 <Tooltip term="gcp" label="Google Cloud" />
 
 <!-- Inside HTML table cells -->
-<td><Tooltip term="terraform" /></td>
+
+<td>
+  <Tooltip term="terraform" />
+</td>
 ```
 
 ## When to add a new term
 
 Add a glossary entry when:
+
 - A term appears on multiple pages
 - The term has a specific meaning in this context (e.g. "transport" means something specific to GCP Cross-Cloud Interconnect)
 - First-time readers might not know the abbreviation

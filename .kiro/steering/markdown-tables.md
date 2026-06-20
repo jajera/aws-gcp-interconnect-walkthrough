@@ -22,7 +22,10 @@ Markdown tables (`| col | col |`) **do not render** in `.mdx` files that import 
     </tr>
   </thead>
   <tbody>
-    <tr><td>value</td><td>value</td></tr>
+    <tr>
+      <td>value</td>
+      <td>value</td>
+    </tr>
   </tbody>
 </table>
 ```
@@ -31,8 +34,8 @@ Markdown tables (`| col | col |`) **do not render** in `.mdx` files that import 
 
 ```markdown
 | Column A | Column B |
-| --- | --- |
-| value | value |
+| -------- | -------- |
+| value    | value    |
 ```
 
 ## HTML table rules

@@ -3,8 +3,8 @@ title: GCP Transport (gcloud)
 description: Step 4 — Create the Partner Cross-Cloud Interconnect transport using the activation key from AWS.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Step 4 — Create the GCP transport
 
@@ -34,11 +34,13 @@ gcloud beta network-connectivity transports create "$TRANSPORT_NAME" \
 ```
 
 <Aside type="caution">
-When using `--activation-key`, bandwidth is embedded in the key — do **not** pass `--bandwidth` separately.
+  When using `--activation-key`, bandwidth is embedded in the key — do **not** pass `--bandwidth`
+  separately.
 </Aside>
 
 <Aside type="note">
-The command blocks while the long-running operation completes (`Waiting for operation ...`). That is normal — do not interrupt unless you intend to cancel the create.
+  The command blocks while the long-running operation completes (`Waiting for operation ...`). That
+  is normal — do not interrupt unless you intend to cancel the create.
 </Aside>
 
 ### Check status
@@ -58,9 +60,24 @@ gcloud beta network-connectivity transports describe "$TRANSPORT_NAME" \
     </tr>
   </thead>
   <tbody>
-    <tr><td><code>CREATING</code></td><td>Long-running create in progress — wait</td></tr>
-    <tr><td><code>PENDING_CONFIG</code></td><td>Create finished — proceed to Step 5 immediately</td></tr>
-    <tr><td><code>ACTIVE</code></td><td>May appear after AWS interconnect is Available (not required before Step 5)</td></tr>
+    <tr>
+      <td>
+        <code>CREATING</code>
+      </td>
+      <td>Long-running create in progress — wait</td>
+    </tr>
+    <tr>
+      <td>
+        <code>PENDING_CONFIG</code>
+      </td>
+      <td>Create finished — proceed to Step 5 immediately</td>
+    </tr>
+    <tr>
+      <td>
+        <code>ACTIVE</code>
+      </td>
+      <td>May appear after AWS interconnect is Available (not required before Step 5)</td>
+    </tr>
   </tbody>
 </table>
 

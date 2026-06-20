@@ -3,8 +3,8 @@ title: Verify Routing
 description: Step 6 — Confirm routing on both sides and poll until AWS interconnect reaches Available.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Step 6 — Verify routing and wait for AWS
 
@@ -21,11 +21,37 @@ After Step 5, you are waiting on <Tooltip term="aws" /> (`pending` → `availabl
     </tr>
   </thead>
   <tbody>
-    <tr><td>AWS interconnect state</td><td><code>pending</code></td><td><code>failed</code></td></tr>
-    <tr><td>DXGW association</td><td><code>associated</code> (can happen before Available)</td><td>stuck pending / disassociated</td></tr>
-    <tr><td>GCP peering</td><td>ACTIVE / Connected</td><td>INACTIVE or error in STATE_DETAILS</td></tr>
-    <tr><td>GCP transport</td><td>PENDING_CONFIG, adminEnabled: true</td><td>stuck CREATING for hours</td></tr>
-    <tr><td>GCP incoming routes</td><td>0 items</td><td>still 0 after AWS available (10+ min)</td></tr>
+    <tr>
+      <td>AWS interconnect state</td>
+      <td>
+        <code>pending</code>
+      </td>
+      <td>
+        <code>failed</code>
+      </td>
+    </tr>
+    <tr>
+      <td>DXGW association</td>
+      <td>
+        <code>associated</code> (can happen before Available)
+      </td>
+      <td>stuck pending / disassociated</td>
+    </tr>
+    <tr>
+      <td>GCP peering</td>
+      <td>ACTIVE / Connected</td>
+      <td>INACTIVE or error in STATE_DETAILS</td>
+    </tr>
+    <tr>
+      <td>GCP transport</td>
+      <td>PENDING_CONFIG, adminEnabled: true</td>
+      <td>stuck CREATING for hours</td>
+    </tr>
+    <tr>
+      <td>GCP incoming routes</td>
+      <td>0 items</td>
+      <td>still 0 after AWS available (10+ min)</td>
+    </tr>
   </tbody>
 </table>
 
@@ -94,7 +120,8 @@ aws interconnect list-connections \
 ```
 
 <Aside type="caution">
-`aws directconnect describe-interconnects` is the legacy physical Direct Connect API — **not** AWS Interconnect multicloud. Do not use it for this demo.
+  `aws directconnect describe-interconnects` is the legacy physical Direct Connect API — **not** AWS
+  Interconnect multicloud. Do not use it for this demo.
 </Aside>
 
 ## AWS — DX Gateway association

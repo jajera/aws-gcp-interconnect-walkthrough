@@ -3,10 +3,11 @@ title: Billing Verification (Free Tier)
 description: Fixing the "Unable to create free trial connection" error when using AWS Interconnect Free Tier.
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Aside, Steps } from "@astrojs/starlight/components";
 
 <Aside type="note">
-This page applies only when using **AWS Interconnect – multicloud – Free Tier**. Paid multicloud does not use the "free trial connection" path — if Free Tier fails, switch to paid (Step 3).
+  This page applies only when using **AWS Interconnect – multicloud – Free Tier**. Paid multicloud
+  does not use the "free trial connection" path — if Free Tier fails, switch to paid (Step 3).
 </Aside>
 
 ## The error
@@ -41,7 +42,9 @@ The Free Tier is $0 on AWS for bandwidth, but AWS still checks that the account 
 </Steps>
 
 <Aside type="caution">
-**Organizations note:** If Terraform and the DX Gateway are in a member account, billing verification still runs against the organization management (payer) account. Fix payment methods there, not only in the member account.
+  **Organizations note:** If Terraform and the DX Gateway are in a member account, billing
+  verification still runs against the organization management (payer) account. Fix payment methods
+  there, not only in the member account.
 </Aside>
 
 ## Payment already shows Verified but error persists?
@@ -69,5 +72,7 @@ Same error on the management (payer) account after all checks? That usually mean
 **Practical fallback:** Use **AWS Interconnect – multicloud (paid, 1 Gbps)** — it bypasses all Free Tier eligibility checks entirely.
 
 <Aside type="tip">
-**Account alignment:** Create the interconnect in the same AWS account where Terraform created the Direct Connect gateway (`terraform output -raw aws_dx_gateway_id`). Switching to the management account for billing does not help if the DXGW and VPC live in a member account.
+  **Account alignment:** Create the interconnect in the same AWS account where Terraform created the
+  Direct Connect gateway (`terraform output -raw aws_dx_gateway_id`). Switching to the management
+  account for billing does not help if the DXGW and VPC live in a member account.
 </Aside>

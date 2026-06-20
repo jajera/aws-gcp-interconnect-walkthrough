@@ -3,7 +3,7 @@ title: Reference
 description: Repository layout, variable reference, output reference, and external links.
 ---
 
-import Tooltip from '@/components/Tooltip.astro';
+import Tooltip from "@/components/Tooltip.astro";
 
 ## Repository layout
 
@@ -34,9 +34,28 @@ Step 7 writes `demo-gce-key` and `demo-gce-key.pub` locally — both are gitigno
     </tr>
   </thead>
   <tbody>
-    <tr><td><code>aws_interconnect_connection</code></td><td>Not yet in hashicorp/aws provider (<a href="https://github.com/hashicorp/terraform-provider-aws/issues/47458">issue #47458</a>); use console/CLI</td></tr>
-    <tr><td><code>google_network_connectivity_transport</code></td><td>Beta API; activation-key flow is console-driven today</td></tr>
-    <tr><td>VPC peering to transport network</td><td>Depends on runtime <code>peeringNetwork</code> from transport describe</td></tr>
+    <tr>
+      <td>
+        <code>aws_interconnect_connection</code>
+      </td>
+      <td>
+        Not yet in hashicorp/aws provider (
+        <a href="https://github.com/hashicorp/terraform-provider-aws/issues/47458">issue #47458</a>
+        ); use console/CLI
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>google_network_connectivity_transport</code>
+      </td>
+      <td>Beta API; activation-key flow is console-driven today</td>
+    </tr>
+    <tr>
+      <td>VPC peering to transport network</td>
+      <td>
+        Depends on runtime <code>peeringNetwork</code> from transport describe
+      </td>
+    </tr>
   </tbody>
 </table>
 

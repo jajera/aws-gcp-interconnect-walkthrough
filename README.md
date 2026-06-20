@@ -8,16 +8,16 @@ Documentation for [terraform-aws-interconnect-demo](https://github.com/jajera/te
 
 An [Astro Starlight](https://starlight.astro.build/) site with step-by-step guides covering:
 
-| Section | Content |
-| --- | --- |
-| Overview | Architecture, what Terraform manages vs manual steps |
-| Prerequisites | Accounts, tools, authentication, region pairing, cost estimates |
-| Setup | Configure variables, terraform apply, GCP API prep |
-| Interconnect | AWS console (activation key), GCP transport, VPC peering |
-| Verify | Poll routing states, end-to-end ping EC2 ↔ GCE |
-| Teardown | Ordered cleanup to stop billing |
-| Troubleshooting | Decision trees, CloudTrail, SCPs, billing verification |
-| Reference | Repo layout, variables, outputs, external links |
+| Section         | Content                                                         |
+| --------------- | --------------------------------------------------------------- |
+| Overview        | Architecture, what Terraform manages vs manual steps            |
+| Prerequisites   | Accounts, tools, authentication, region pairing, cost estimates |
+| Setup           | Configure variables, terraform apply, GCP API prep              |
+| Interconnect    | AWS console (activation key), GCP transport, VPC peering        |
+| Verify          | Poll routing states, end-to-end ping EC2 ↔ GCE                  |
+| Teardown        | Ordered cleanup to stop billing                                 |
+| Troubleshooting | Decision trees, CloudTrail, SCPs, billing verification          |
+| Reference       | Repo layout, variables, outputs, external links                 |
 
 ## Quick start
 

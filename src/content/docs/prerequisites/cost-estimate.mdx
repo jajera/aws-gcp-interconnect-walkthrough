@@ -3,13 +3,14 @@ title: Cost Estimate
 description: What this demo costs depending on how far you go — Terraform only, paid multicloud, or Free Tier.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import Tooltip from '@/components/Tooltip.astro';
+import { Aside } from "@astrojs/starlight/components";
+import Tooltip from "@/components/Tooltip.astro";
 
 Costs depend on how far you take the demo and whether you use Free Tier or paid multicloud on <Tooltip term="aws" />. <Tooltip term="gcp" /> bills its <Tooltip term="partner-cci" label="Partner Cross-Cloud" /> transport independently on both paths ([AWS pricing](https://aws.amazon.com/interconnect/multicloud/pricing/), [GCP interconnect pricing](https://cloud.google.com/network-connectivity/docs/interconnect/pricing/)).
 
 <Aside type="caution">
-This walkthrough assumes paid multicloud (1 Gbps) — typical when the Free Tier quota is already used in your Region/CSP pair (`ap-southeast-1` → GCP).
+  This walkthrough assumes paid multicloud (1 Gbps) — typical when the Free Tier quota is already
+  used in your Region/CSP pair (`ap-southeast-1` → GCP).
 </Aside>
 
 ## Terraform only (`terraform apply`, no Steps 3–5)
@@ -23,11 +24,37 @@ This walkthrough assumes paid multicloud (1 Gbps) — typical when the Free Tier
     </tr>
   </thead>
   <tbody>
-    <tr><td>3 VPC interface endpoints (SSM, one AZ)</td><td>~$22</td><td>~$0.12</td></tr>
-    <tr><td>EC2 t3.micro</td><td>~$7.60</td><td>~$0.04</td></tr>
-    <tr><td>GCE e2-micro in asia-southeast1</td><td>~$6</td><td>~$0.04</td></tr>
-    <tr><td>VPC, DX Gateway, VGW, routes, firewall, IAM</td><td>$0</td><td>$0</td></tr>
-    <tr><td><strong>Total</strong></td><td><strong>~$30–40/month</strong></td><td><strong>~$0.20–0.50</strong></td></tr>
+    <tr>
+      <td>3 VPC interface endpoints (SSM, one AZ)</td>
+      <td>~$22</td>
+      <td>~$0.12</td>
+    </tr>
+    <tr>
+      <td>EC2 t3.micro</td>
+      <td>~$7.60</td>
+      <td>~$0.04</td>
+    </tr>
+    <tr>
+      <td>GCE e2-micro in asia-southeast1</td>
+      <td>~$6</td>
+      <td>~$0.04</td>
+    </tr>
+    <tr>
+      <td>VPC, DX Gateway, VGW, routes, firewall, IAM</td>
+      <td>$0</td>
+      <td>$0</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Total</strong>
+      </td>
+      <td>
+        <strong>~$30–40/month</strong>
+      </td>
+      <td>
+        <strong>~$0.20–0.50</strong>
+      </td>
+    </tr>
   </tbody>
 </table>
 
@@ -44,11 +71,37 @@ VPC endpoints are the main AWS cost — they enable <Tooltip term="ssm" /> from 
     </tr>
   </thead>
   <tbody>
-    <tr><td>Terraform base (above)</td><td>~$30–40</td><td>~$0.25</td></tr>
-    <tr><td>AWS Interconnect — multicloud (1 Gbps, APAC)</td><td>~$1,000</td><td>~$5.50</td></tr>
-    <tr><td>GCP Partner Cross-Cloud transport (APAC)</td><td>~$3,650</td><td>~$20</td></tr>
-    <tr><td>Data transfer over the transport</td><td>$0</td><td>$0</td></tr>
-    <tr><td><strong>Total</strong></td><td><strong>~$4,680+/month</strong></td><td><strong>~$26–30</strong></td></tr>
+    <tr>
+      <td>Terraform base (above)</td>
+      <td>~$30–40</td>
+      <td>~$0.25</td>
+    </tr>
+    <tr>
+      <td>AWS Interconnect — multicloud (1 Gbps, APAC)</td>
+      <td>~$1,000</td>
+      <td>~$5.50</td>
+    </tr>
+    <tr>
+      <td>GCP Partner Cross-Cloud transport (APAC)</td>
+      <td>~$3,650</td>
+      <td>~$20</td>
+    </tr>
+    <tr>
+      <td>Data transfer over the transport</td>
+      <td>$0</td>
+      <td>$0</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Total</strong>
+      </td>
+      <td>
+        <strong>~$4,680+/month</strong>
+      </td>
+      <td>
+        <strong>~$26–30</strong>
+      </td>
+    </tr>
   </tbody>
 </table>
 
@@ -63,15 +116,39 @@ VPC endpoints are the main AWS cost — they enable <Tooltip term="ssm" /> from 
     </tr>
   </thead>
   <tbody>
-    <tr><td>Terraform base (above)</td><td>~$30–40</td><td>~$0.25</td></tr>
-    <tr><td>AWS Interconnect — Free Tier (500 Mbps)</td><td>$0</td><td>$0</td></tr>
-    <tr><td>GCP Partner Cross-Cloud transport (APAC)</td><td>~$3,650</td><td>~$20</td></tr>
-    <tr><td><strong>Total</strong></td><td><strong>~$3,680+/month</strong></td><td><strong>~$20–21</strong></td></tr>
+    <tr>
+      <td>Terraform base (above)</td>
+      <td>~$30–40</td>
+      <td>~$0.25</td>
+    </tr>
+    <tr>
+      <td>AWS Interconnect — Free Tier (500 Mbps)</td>
+      <td>$0</td>
+      <td>$0</td>
+    </tr>
+    <tr>
+      <td>GCP Partner Cross-Cloud transport (APAC)</td>
+      <td>~$3,650</td>
+      <td>~$20</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Total</strong>
+      </td>
+      <td>
+        <strong>~$3,680+/month</strong>
+      </td>
+      <td>
+        <strong>~$20–21</strong>
+      </td>
+    </tr>
   </tbody>
 </table>
 
 <Aside type="danger">
-GCP transport pricing is hourly (~$5.00/hr for the lowest listed APAC tier). AWS paid interconnect adds ~$1.37/hr at Tier 1 / 1 Gbps. Tear down interconnect resources before `terraform destroy` (see [Teardown](/aws-gcp-interconnect-walkthrough/teardown/)).
+  GCP transport pricing is hourly (~$5.00/hr for the lowest listed APAC tier). AWS paid interconnect
+  adds ~$1.37/hr at Tier 1 / 1 Gbps. Tear down interconnect resources before `terraform destroy`
+  (see [Teardown](/aws-gcp-interconnect-walkthrough/teardown/)).
 </Aside>
 
 ## Keeping costs low
