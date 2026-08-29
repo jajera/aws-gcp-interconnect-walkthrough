@@ -28,7 +28,7 @@ npm install
 npm run dev
 ```
 
-Open the URL the dev server prints (with `base: '/aws-gcp-interconnect-walkthrough'`, typically `http://localhost:4321/aws-gcp-interconnect-walkthrough/`).
+Open the URL the dev server prints (with `base: '/aws-gcp-interconnect-walkthrough'`, typically `http://localhost:4321/`).
 
 ```bash
 npm run build   # production build (draft pages excluded)
