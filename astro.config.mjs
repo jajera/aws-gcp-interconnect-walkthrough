@@ -15,6 +15,9 @@ export default defineConfig({
       favicon: "/favicon.svg",
       description:
         "CLI and Terraform walkthroughs for private AWS-GCP connectivity using Interconnect multicloud.",
+      components: {
+        Head: "./src/components/Head.astro",
+      },
       plugins: [starlightThemeVintage()],
       customCss: ["./src/styles/splash-overrides.css"],
       social: [
