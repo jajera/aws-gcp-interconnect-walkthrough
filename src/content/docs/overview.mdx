@@ -34,7 +34,7 @@ We chose EC2-to-VM connectivity because it's straightforward to verify and a com
 
 ## Architecture
 
-![Architecture diagram: EC2 and GCE VM in private subnets, connected via VGW, DX Gateway, AWS Interconnect multicloud, GCP transport, and VPC peering](/aws-gcp-interconnect-walkthrough/architecture-diagram.png)
+![Architecture diagram: EC2 and GCE VM in private subnets, connected via VGW, DX Gateway, AWS Interconnect multicloud, GCP transport, and VPC peering](/architecture-diagram.png)
 
 **Traffic path (AWS → GCP):**
 EC2 → <Tooltip term="vgw" /> → <Tooltip term="dx-gateway" label="DX Gateway" /> → Interconnect → GCP <Tooltip term="transport" label="Transport" /> → <Tooltip term="vpc-peering" label="VPC peering" /> → GCE VM

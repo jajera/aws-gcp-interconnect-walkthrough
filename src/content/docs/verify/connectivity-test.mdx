@@ -69,7 +69,7 @@ gcloud compute ssh "$(terraform output -raw gce_instance_name)" \
 
 <Aside type="danger">
   These files contain secrets. They are listed in `.gitignore` (`demo-gce-key`, `demo-gce-key.pub`)
-  — do not commit them. Remove them during [Teardown](/aws-gcp-interconnect-walkthrough/teardown/).
+  — do not commit them. Remove them during [Teardown](/teardown/).
 </Aside>
 
 From the GCE shell, ping using the AWS IP you printed above:

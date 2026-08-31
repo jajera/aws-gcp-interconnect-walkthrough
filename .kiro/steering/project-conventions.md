@@ -23,22 +23,22 @@ The content for this documentation site comes from the Terraform project at:
 
 ## Tech Stack
 
-- Astro + @astrojs/starlight + starlight-theme-vintage
+- Astro + @astrojs/starlight + johna.kiwi Patina theme tokens
 - unplugin-icons for brand icons (mdi, simple-icons)
 - Node 22 (.nvmrc)
 - GitHub Actions: deploy to GitHub Pages on push to main
 
 ## Site Config
 
-- `site: 'https://jajera.github.io'`
-- `base: '/aws-gcp-interconnect-walkthrough'`
-- All internal links must include the base path
+- `site: 'https://aws-gcp-interconnect-walkthrough.johna.kiwi'`
+- `base: '/'` (custom domain root)
+- Internal links are root-relative (e.g. `/setup/`) — do not use the old `/aws-gcp-interconnect-walkthrough/` prefix
 
 ## Open Graph / Link Previews
 
 - OG image lives at `public/og-image.png`
 - Meta tags are set in `astro.config.mjs` under `head[]`
-- Both `og:image` and `twitter:image` must point to the full URL including base path
+- Both `og:image` and `twitter:image` must use the custom-domain absolute URL
 - Update `og:image:alt` to describe the actual image content
 
 ## Sidebar Management
@@ -58,5 +58,5 @@ When adding a new content page:
 3. Import Tooltip and any needed Starlight components
 4. Use HTML `<table>` for any tables (never markdown tables)
 5. Use `<Tooltip>` for key terms on first occurrence
-6. Add internal links with the full base path
+6. Add internal root-relative links (e.g. `/setup/`)
 7. Add the slug to `astro.config.mjs` sidebar when ready to publish

@@ -10,16 +10,16 @@ Content will be sourced from: `~/workspace/jajera/tf-aws-interconnect-demo`
 
 ## Tech stack
 
-- Astro + `@astrojs/starlight` + `starlight-theme-vintage`
+- Astro + `@astrojs/starlight` + johna.kiwi Patina theme tokens
 - `unplugin-icons` for brand icons (mdi, simple-icons)
 - Node 22 (`.nvmrc`)
 - GitHub Actions: deploy to GitHub Pages on push to `main`
 
 ## Site config
 
-- `site: 'https://jajera.github.io'`
-- `base: '/aws-gcp-interconnect-walkthrough'`
-- All internal links must include the base path, e.g. `/aws-gcp-interconnect-walkthrough/setup/`
+- `site: 'https://aws-gcp-interconnect-walkthrough.johna.kiwi'`
+- `base: '/'` (custom domain root)
+- Internal links are root-relative, e.g. `/setup/` — do **not** prefix with `/aws-gcp-interconnect-walkthrough/`
 
 ## Site structure
 

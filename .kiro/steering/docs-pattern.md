@@ -51,7 +51,7 @@ Use `<Tooltip term="key" />` for the uppercase form (e.g. AWS, GCP, VPC) or `<To
 
 ## Linking
 
-All internal links must include the base path: `/aws-gcp-interconnect-walkthrough/`.
+Internal links are root-relative under the custom domain (`base: '/'`), e.g. `/setup/` or `/overview/`. Do not prefix with `/aws-gcp-interconnect-walkthrough/`.
 
 ## Default AWS region
 
