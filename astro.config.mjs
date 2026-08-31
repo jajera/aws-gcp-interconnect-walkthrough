@@ -1,6 +1,5 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import starlightThemeVintage from "starlight-theme-vintage";
 import Icons from "unplugin-icons/vite";
 
 export default defineConfig({
@@ -15,11 +14,11 @@ export default defineConfig({
       favicon: "/favicon.svg",
       description:
         "CLI and Terraform walkthroughs for private AWS-GCP connectivity using Interconnect multicloud.",
+      customCss: ["./src/styles/patina-tokens.css", "./src/styles/splash-overrides.css"],
       components: {
+        ThemeSelect: "./src/components/ThemeSelect.astro",
         Head: "./src/components/Head.astro",
       },
-      plugins: [starlightThemeVintage()],
-      customCss: ["./src/styles/splash-overrides.css"],
       social: [
         {
           icon: "github",
@@ -37,7 +36,7 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             property: "og:image",
-            content: "https://jajera.github.io/aws-gcp-interconnect-walkthrough/og-image.png",
+            content: "https://aws-gcp-interconnect-walkthrough.johna.kiwi/og-image.png",
           },
         },
         {
@@ -52,7 +51,7 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             name: "twitter:image",
-            content: "https://jajera.github.io/aws-gcp-interconnect-walkthrough/og-image.png",
+            content: "https://aws-gcp-interconnect-walkthrough.johna.kiwi/og-image.png",
           },
         },
       ],
