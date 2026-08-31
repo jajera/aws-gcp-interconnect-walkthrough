@@ -16,10 +16,10 @@
     "test": "vitest --run"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.39.3",
-    "astro": "^6.4.4",
-    "sharp": "^0.34.0",
-    "zod": "^3.25.76"
+    "@astrojs/starlight": "^0.41.9",
+    "astro": "^7.2.9",
+    "sharp": "^0.35.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
