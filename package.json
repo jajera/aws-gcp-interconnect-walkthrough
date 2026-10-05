@@ -23,14 +23,14 @@
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
-    "@iconify-json/simple-icons": "^1.2.97",
+    "@iconify-json/simple-icons": "^1.2.98",
     "fast-check": "^4.10.2",
     "markdownlint-cli2": "^0.23.3",
     "prettier": "^3.9.9",
     "tsx": "^4.23.15",
     "typescript": "~5.9.3",
     "unplugin-icons": "^24.0.0",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.3"
   },
   "overrides": {
     "smol-toml": ">=1.7.1"
